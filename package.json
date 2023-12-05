@@ -1,9 +1,8 @@
 {
-  "name": "@minimal/material-kit-react",
-  "author": "minimals.cc",
+  "name": "PrimeTravel",
+  "author": "André Rodrigues",
   "licence": "MIT",
-  "version": "1.8.0",
-  "private": false,
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "start": "vite preview",
