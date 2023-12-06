@@ -21,11 +21,13 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
-import UserTableHead from '../user-table-head';
+import BookingsTableHead from '../bookings-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import BookingsTableRow from '../bookings-table-row';
-import UserTableToolbar from '../user-table-toolbar';
+import BookingsTableToolbar from '../bookings-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+import { Box, CircularProgress } from '@mui/material';
+import NoData from 'src/components/noData/noData';
 
 // ----------------------------------------------------------------------
 
@@ -108,22 +110,36 @@ export default function BookingsView() {
       </Stack>
 
       <Card>
-        <UserTableToolbar
+        <BookingsTableToolbar
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
         />
 
-        {loading ? (
-          <p>loading...</p>
-        ) : (
-          <Scrollbar>
+        <Scrollbar>
+          {/* Loading spinner  */}
+          {loading && (
+            <Box
+              sx={{ width: 1, height: 200 }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <CircularProgress />
+            </Box>
+          )}
+
+          {/* Error message  */}
+          {error && <NoData displayName="bookings list" />}
+
+          {/* Successfull render  */}
+          {!loading && !error && (
             <TableContainer sx={{ overflow: 'unset' }}>
               <Table sx={{ minWidth: 800 }}>
-                <UserTableHead
+                <BookingsTableHead
                   order={order}
                   orderBy={orderBy}
-                  rowCount={bookings.length}
+                  rowCount={bookings?.length}
                   numSelected={selected.length}
                   onRequestSort={handleSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -165,8 +181,8 @@ export default function BookingsView() {
                 </TableBody>
               </Table>
             </TableContainer>
-          </Scrollbar>
-        )}
+          )}
+        </Scrollbar>
 
         <TablePagination
           page={page}

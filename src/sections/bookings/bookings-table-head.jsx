@@ -11,7 +11,7 @@ import { visuallyHidden } from './utils';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableHead({
+export default function BookingsTableHead({
   order,
   orderBy,
   rowCount,
@@ -32,6 +32,7 @@ export default function UserTableHead({
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
+            disabled={!rowCount}
           />
         </TableCell>
 
@@ -62,7 +63,7 @@ export default function UserTableHead({
   );
 }
 
-UserTableHead.propTypes = {
+BookingsTableHead.propTypes = {
   order: PropTypes.oneOf(['asc', 'desc']),
   orderBy: PropTypes.string,
   rowCount: PropTypes.number,
