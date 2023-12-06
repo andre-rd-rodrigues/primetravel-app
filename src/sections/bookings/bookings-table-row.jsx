@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -11,18 +12,21 @@ import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
+import { getStatusColor } from 'src/utils/layout.utils';
+
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({
+export default function BookingsTableRow({
   selected,
-  name,
-  avatarUrl,
-  company,
-  role,
-  isVerified,
+  bookingID,
+  customer,
+  airline,
+  destination,
+  travelDate,
+  amount,
   status,
   handleClick,
 }) {
@@ -43,23 +47,29 @@ export default function UserTableRow({
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
 
+        <TableCell>{bookingID}</TableCell>
+
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={name} src={avatarUrl} />
+            <Avatar alt={customer?.firstName} src={customer?.avatar?.url} />
             <Typography variant="subtitle2" noWrap>
-              {name}
+              {customer?.firstName}
             </Typography>
           </Stack>
         </TableCell>
 
-        <TableCell>{company}</TableCell>
+        <TableCell>{`${moment(travelDate?.starting_date).format('DD-MM-YYYY')} | ${moment(
+          travelDate?.end_date
+        ).format('DD-MM-YYYY')}`}</TableCell>
 
-        <TableCell>{role}</TableCell>
+        <TableCell>{airline}</TableCell>
 
-        <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell>
+        <TableCell>{destination}</TableCell>
+
+        <TableCell>{amount}€</TableCell>
 
         <TableCell>
-          <Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label>
+          <Label color={getStatusColor(status)}>{status}</Label>
         </TableCell>
 
         <TableCell align="right">
@@ -93,13 +103,22 @@ export default function UserTableRow({
   );
 }
 
-UserTableRow.propTypes = {
-  avatarUrl: PropTypes.any,
-  company: PropTypes.any,
-  handleClick: PropTypes.func,
-  isVerified: PropTypes.any,
-  name: PropTypes.any,
-  role: PropTypes.any,
-  selected: PropTypes.any,
-  status: PropTypes.string,
+BookingsTableRow.propTypes = {
+  selected: PropTypes.bool.isRequired,
+  bookingID: PropTypes.string.isRequired,
+  customer: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    avatar: PropTypes.shape({
+      url: PropTypes.string,
+    }),
+  }).isRequired,
+  airline: PropTypes.string.isRequired,
+  destination: PropTypes.string.isRequired,
+  travelDate: PropTypes.shape({
+    starting_date: PropTypes.string.isRequired,
+    end_date: PropTypes.string.isRequired,
+  }).isRequired,
+  amount: PropTypes.number.isRequired,
+  status: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };

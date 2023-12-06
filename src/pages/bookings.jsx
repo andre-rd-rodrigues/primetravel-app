@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { UserView } from 'src/sections/user/view';
+import { BookingsView } from 'src/sections/bookings/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function BookingsPage() {
         <title> Bookings | Primetravel </title>
       </Helmet>
 
-      <UserView />
+      <BookingsView />
     </>
   );
 }

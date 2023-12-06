@@ -1,7 +1,6 @@
 // ----------------------------------------------------------------------
 
 export const account = {
-  displayName: 'Jaydon Frankie',
-  email: 'demo@minimals.cc',
+  displayName: 'Administrator',
   photoURL: '/assets/images/avatars/avatar_25.jpg',
 };

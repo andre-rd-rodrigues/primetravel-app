@@ -20,8 +20,8 @@ import { account } from 'src/_mock/account';
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 
-import { NAV } from './config-layout';
-import navConfig from './config-navigation';
+import { NAV } from '../../config/config-layout';
+import navConfig from '../../config/config-navigation';
 
 // ----------------------------------------------------------------------
 

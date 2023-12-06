@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+
 import useAuth from 'src/hooks/useAuth';
 
 import DashboardLayout from 'src/layouts/dashboard';
