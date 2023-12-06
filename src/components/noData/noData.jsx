@@ -1,6 +1,7 @@
-import { Paper, Typography } from '@mui/material';
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import { Paper, Typography } from '@mui/material';
 
 function NoData({ displayName }) {
   return (

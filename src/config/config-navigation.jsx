@@ -19,7 +19,7 @@ const navConfig = [
   },
   {
     title: 'customers',
-    path: '/bookings',
+    path: '/customers',
     icon: icon('ic_users'),
   },
   {

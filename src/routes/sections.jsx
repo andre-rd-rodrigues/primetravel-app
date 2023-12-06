@@ -8,6 +8,7 @@ import DashboardLayout from 'src/layouts/dashboard';
 export const IndexPage = lazy(() => import('src/pages/app'));
 export const BlogPage = lazy(() => import('src/pages/blog'));
 export const BookingsPage = lazy(() => import('src/pages/bookings'));
+export const BookingDetailsPage = lazy(() => import('src/sections/bookings/view/booking-details'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
@@ -30,6 +31,7 @@ export default function Router() {
       ),
       children: [
         { element: <IndexPage />, index: true },
+        { path: 'bookings/:id', element: <BookingDetailsPage /> },
         { path: 'bookings', element: <BookingsPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },

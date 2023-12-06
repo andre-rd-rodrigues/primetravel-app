@@ -16,6 +16,7 @@ import { getStatusColor } from 'src/utils/layout.utils';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
+import { useRouter } from 'src/routes/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -31,12 +32,18 @@ export default function BookingsTableRow({
   handleClick,
 }) {
   const [open, setOpen] = useState(null);
+  const router = useRouter();
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
 
   const handleCloseMenu = () => {
+    setOpen(null);
+  };
+
+  const handleViewBookingDetails = () => {
+    router.push(`/bookings/${bookingID}`);
     setOpen(null);
   };
 
@@ -89,8 +96,13 @@ export default function BookingsTableRow({
           sx: { width: 140 },
         }}
       >
+        <MenuItem onClick={handleViewBookingDetails}>
+          <Iconify icon="fluent:open-12-regular" sx={{ mr: 2 }} />
+          View
+        </MenuItem>
+
         <MenuItem onClick={handleCloseMenu}>
-          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          <Iconify icon="iconamoon:edit" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
 
@@ -105,7 +117,7 @@ export default function BookingsTableRow({
 
 BookingsTableRow.propTypes = {
   selected: PropTypes.bool.isRequired,
-  bookingID: PropTypes.string.isRequired,
+  bookingID: PropTypes.number.isRequired,
   customer: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     avatar: PropTypes.shape({

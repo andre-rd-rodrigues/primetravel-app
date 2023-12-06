@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
+import { Box, CircularProgress } from '@mui/material';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
@@ -19,15 +20,14 @@ import { db } from 'src/config/firebaseConfig';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
+import NoData from 'src/components/noData/noData';
 
 import TableNoData from '../table-no-data';
-import BookingsTableHead from '../bookings-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import BookingsTableRow from '../bookings-table-row';
+import BookingsTableHead from '../bookings-table-head';
 import BookingsTableToolbar from '../bookings-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import { Box, CircularProgress } from '@mui/material';
-import NoData from 'src/components/noData/noData';
 
 // ----------------------------------------------------------------------
 
@@ -40,9 +40,9 @@ export default function BookingsView() {
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('bookingId');
 
-  const [filterName, setFilterName] = useState('');
+  const [filterBookingId, setFilterBookingId] = useState();
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -86,19 +86,21 @@ export default function BookingsView() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByName = (event) => {
+  const handleFilterByBookingId = (event) => {
     setPage(0);
-    setFilterName(event.target.value);
+    setFilterBookingId(event.target.value ? parseInt(event.target.value, 10) : undefined);
   };
 
   const dataFiltered = applyFilter({
-    inputData: users,
+    inputData: bookings,
     comparator: getComparator(order, orderBy),
-    filterName,
+    filterId: filterBookingId,
   });
 
-  const notFound = !dataFiltered.length && !!filterName;
-  console.log(selected);
+  const notFound = !dataFiltered.length && !!filterBookingId;
+  const minRows = page * rowsPerPage;
+  const maxRows = page * rowsPerPage + rowsPerPage;
+
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -112,8 +114,8 @@ export default function BookingsView() {
       <Card>
         <BookingsTableToolbar
           numSelected={selected.length}
-          filterName={filterName}
-          onFilterName={handleFilterByName}
+          filterValue={filterBookingId}
+          onFilterBooking={handleFilterByBookingId}
         />
 
         <Scrollbar>
@@ -144,7 +146,7 @@ export default function BookingsView() {
                   onRequestSort={handleSort}
                   onSelectAllClick={handleSelectAllClick}
                   headLabel={[
-                    { id: 'bookingID', label: 'Booking ID' },
+                    { id: 'bookingId', label: 'Booking ID' },
                     { id: 'customer', label: 'Customer' },
                     { id: 'travelDate', label: 'Travel date' },
                     { id: 'airline', label: 'Airline' },
@@ -155,29 +157,27 @@ export default function BookingsView() {
                   ]}
                 />
                 <TableBody>
-                  {bookings
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
-                      <BookingsTableRow
-                        key={row.id}
-                        bookingID={row.bookingNumber}
-                        customer={row?.customer}
-                        status={row.status}
-                        amount={row?.payment_info?.total_amount}
-                        destination={row?.destination?.location?.country}
-                        airline={row?.travel_info?.airline?.airline?.iataCode}
-                        travelDate={row?.travel_info?.dates}
-                        selected={selected.includes(row.bookingNumber)}
-                        handleClick={(event) => handleClick(event, row.bookingNumber)}
-                      />
-                    ))}
+                  {dataFiltered.slice(minRows, maxRows).map((row) => (
+                    <BookingsTableRow
+                      key={row.id}
+                      bookingID={row.bookingNumber}
+                      customer={row?.customer}
+                      status={row.status}
+                      amount={row?.payment_info?.total_amount}
+                      destination={row?.destination?.location?.country}
+                      airline={row?.travel_info?.airline?.airline?.iataCode}
+                      travelDate={row?.travel_info?.dates}
+                      selected={selected.includes(row.bookingNumber)}
+                      handleClick={(event) => handleClick(event, row.bookingNumber)}
+                    />
+                  ))}
 
                   <TableEmptyRows
                     height={77}
                     emptyRows={emptyRows(page, rowsPerPage, users.length)}
                   />
 
-                  {notFound && <TableNoData query={filterName} />}
+                  {notFound && <TableNoData query={filterBookingId} />}
                 </TableBody>
               </Table>
             </TableContainer>

@@ -15,8 +15,6 @@ function useAuth() {
       .then((userCredential) => {
         setUser(userCredential.user);
         setLoading(false);
-
-        return console.log(userCredential.user);
       })
       .catch((error) => {
         const errorCode = error.code;

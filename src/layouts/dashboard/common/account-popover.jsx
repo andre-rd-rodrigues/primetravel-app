@@ -54,8 +54,6 @@ export default function AccountPopover() {
     });
   };
 
-  console.log(user);
-
   return (
     <>
       <IconButton
