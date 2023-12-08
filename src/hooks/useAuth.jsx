@@ -7,6 +7,10 @@ function useAuth() {
   const [user, setUser] = useState(undefined);
   const [loading, setLoading] = useState(false);
 
+  const isLoggedIn = localStorage.getItem(
+    'firebase:host:primetravel-162f2-default-rtdb.europe-west1.firebasedatabase.app'
+  );
+
   // Function to sign in a user with email and password
   const signIn = async ({ email, password }) => {
     setLoading(true);
@@ -49,6 +53,7 @@ function useAuth() {
     loading,
     signIn,
     signOut,
+    isLoggedIn,
   };
 }
 

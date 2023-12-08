@@ -15,3 +15,15 @@ export const getStatusColor = (status) => {
       return 'primary';
   }
 };
+
+export const convertPackagesToDisplayFields = (packages) =>
+  packages?.flatMap((packageItem) => [
+    {
+      fieldName: packageItem.title,
+      imageUrl: packageItem.images[0],
+      fieldValues: [
+        { fieldValueName: null, fieldValue: packageItem.description },
+        { fieldValueName: 'Price', fieldValue: `${packageItem.price}€` },
+      ],
+    },
+  ]);

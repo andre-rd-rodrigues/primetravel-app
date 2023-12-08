@@ -16,19 +16,20 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 // ----------------------------------------------------------------------
 
 export default function Router() {
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
 
   const routes = useRoutes([
     {
-      element: user ? (
-        <DashboardLayout>
-          <Suspense>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
-      ) : (
-        <Navigate to="/login" replace />
-      ),
+      element:
+        user || isLoggedIn ? (
+          <DashboardLayout>
+            <Suspense>
+              <Outlet />
+            </Suspense>
+          </DashboardLayout>
+        ) : (
+          <Navigate to="/login" replace />
+        ),
       children: [
         { element: <IndexPage />, index: true },
         { path: 'bookings/:id', element: <BookingDetailsPage /> },
