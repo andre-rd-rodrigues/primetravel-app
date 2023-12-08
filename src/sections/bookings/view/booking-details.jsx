@@ -1,16 +1,21 @@
-import { Avatar, Box, Card, CircularProgress, Container, Stack, Typography } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
-import { ref } from 'firebase/database';
 import React from 'react';
-import { useListVals, useObjectVal } from 'react-firebase-hooks/database';
+import { ref } from 'firebase/database';
 import { useParams } from 'react-router-dom';
-import LoadingBox from 'src/components/loading/loading-box';
-import { db } from 'src/config/firebaseConfig';
-import { useRouter } from 'src/routes/hooks';
+import { useObjectVal } from 'react-firebase-hooks/database';
+
+import { Container } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
+
 import { ROUTES } from 'src/routes/routes.constants';
-import BookingDetailsCustomer from '../booking-details-customer';
-import BookingDetailsSection from '../booking-details-section';
+
 import { convertPackagesToDisplayFields } from 'src/utils/layout.utils';
+
+import { db } from 'src/config/firebaseConfig';
+
+import LoadingBox from 'src/components/loading/loading-box';
+
+import BookingDetailsSection from '../booking-details-section';
+import BookingDetailsCustomer from '../booking-details-customer';
 
 function BookingDetailsPage() {
   const { id } = useParams();
@@ -145,7 +150,7 @@ function BookingDetailsPage() {
                     fieldName: 'General information',
                     fieldValues: [
                       {
-                        fieldValueName: 'Fullname',
+                        fieldValueName: 'Full name',
                         fieldValue: booking?.travel_agent?.name,
                       },
                     ],

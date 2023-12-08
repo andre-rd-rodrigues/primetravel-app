@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -16,22 +15,14 @@ import { useRouter } from 'src/routes/hooks';
 
 import { getStatusColor } from 'src/utils/layout.utils';
 
+import { USER_STATUS } from 'src/constants';
+
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function BookingsTableRow({
-  selected,
-  bookingID,
-  customer,
-  airline,
-  destination,
-  travelDate,
-  amount,
-  status,
-  handleClick,
-}) {
+export default function CustomerTableRow({ customer, selected, handleClick }) {
   const [open, setOpen] = useState(null);
   const router = useRouter();
 
@@ -44,7 +35,7 @@ export default function BookingsTableRow({
   };
 
   const handleViewBookingDetails = () => {
-    router.push(`/bookings/${bookingID}`);
+    router.push(`/customers/${customer?.id}`);
     setOpen(null);
   };
 
@@ -55,29 +46,23 @@ export default function BookingsTableRow({
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
 
-        <TableCell>{bookingID}</TableCell>
-
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={customer?.first_name} src={customer?.avatar?.url} />
+            <Avatar alt={customer?.full_name} src={customer?.avatar?.url} />
             <Typography variant="subtitle2" noWrap>
-              {customer?.first_name}
+              {customer?.full_name}
             </Typography>
           </Stack>
         </TableCell>
 
-        <TableCell>{`${moment(travelDate?.starting_date).format('DD-MM-YYYY')} | ${moment(
-          travelDate?.end_date
-        ).format('DD-MM-YYYY')}`}</TableCell>
-
-        <TableCell>{airline}</TableCell>
-
-        <TableCell>{destination}</TableCell>
-
-        <TableCell>{amount}€</TableCell>
+        <TableCell>{customer?.sex}</TableCell>
+        <TableCell>{customer?.contacts?.email}</TableCell>
+        <TableCell>{customer?.contacts?.phone_number}</TableCell>
 
         <TableCell>
-          <Label color={getStatusColor(status)}>{status}</Label>
+          <Label color={getStatusColor(customer?.isActive)}>
+            {customer?.isActive ? USER_STATUS.ACTIVE : USER_STATUS.INACTIVE}
+          </Label>
         </TableCell>
 
         <TableCell align="right">
@@ -116,22 +101,20 @@ export default function BookingsTableRow({
   );
 }
 
-BookingsTableRow.propTypes = {
+CustomerTableRow.propTypes = {
   selected: PropTypes.bool.isRequired,
-  bookingID: PropTypes.number.isRequired,
   customer: PropTypes.shape({
-    first_name: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    full_name: PropTypes.string.isRequired,
     avatar: PropTypes.shape({
       url: PropTypes.string,
     }),
+    sex: PropTypes.string.isRequired,
+    contacts: PropTypes.shape({
+      email: PropTypes.string,
+      phone_number: PropTypes.string,
+    }),
+    isActive: PropTypes.bool.isRequired,
   }).isRequired,
-  airline: PropTypes.string.isRequired,
-  destination: PropTypes.string.isRequired,
-  travelDate: PropTypes.shape({
-    starting_date: PropTypes.string.isRequired,
-    end_date: PropTypes.string.isRequired,
-  }).isRequired,
-  amount: PropTypes.number.isRequired,
-  status: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
 };

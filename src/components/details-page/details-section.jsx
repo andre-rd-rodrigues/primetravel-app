@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Box, Card, Stack, Typography } from '@mui/material';
 
-function BookingDetailsSection({ content, fieldsContainerProps }) {
+function DetailsSection({ content, fieldsContainerProps }) {
   const { title, fields } = content;
 
   return (
@@ -23,9 +23,9 @@ function BookingDetailsSection({ content, fieldsContainerProps }) {
         </Stack>
       )}
 
-      <Stack display="flex" direction="row" spacing={10} {...fieldsContainerProps}>
+      <Stack display="flex" direction="row" gap={3} {...fieldsContainerProps} flexWrap="wrap">
         {fields?.map(({ fieldName, fieldValues, imageUrl }, i) => (
-          <Stack key={i} spacing={0.5}>
+          <>
             {imageUrl && (
               <Box
                 style={{ marginBottom: '9px' }}
@@ -39,9 +39,11 @@ function BookingDetailsSection({ content, fieldsContainerProps }) {
                 boxShadow={12}
               />
             )}
-            <Typography fontWeight={700} fontSize={13} marginBottom={0.2}>
-              {fieldName}
-            </Typography>
+            {fieldName && (
+              <Typography fontWeight={700} fontSize={13} marginBottom={0.2}>
+                {fieldName}
+              </Typography>
+            )}
             {fieldValues?.map(({ fieldValue, fieldValueName }, vi) => (
               <Typography key={vi} fontSize={13}>
                 <Typography component="span" fontSize={13} sx={{ fontWeight: '600' }}>
@@ -50,16 +52,16 @@ function BookingDetailsSection({ content, fieldsContainerProps }) {
                 {fieldValue}
               </Typography>
             ))}
-          </Stack>
+          </>
         ))}
       </Stack>
     </Card>
   );
 }
 
-export default BookingDetailsSection;
+export default DetailsSection;
 
-BookingDetailsSection.propTypes = {
+DetailsSection.propTypes = {
   fieldsContainerProps: PropTypes.any,
   content: PropTypes.shape({
     title: PropTypes.string,

@@ -1,6 +1,7 @@
-import { Box, CircularProgress } from '@mui/material';
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import { Box, CircularProgress } from '@mui/material';
 
 function LoadingBox({ loading, sx = { width: 1, height: 200 } }) {
   return loading ? (

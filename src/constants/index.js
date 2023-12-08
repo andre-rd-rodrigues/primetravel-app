@@ -3,3 +3,8 @@ export const STATUS = {
   CANCELED: 'canceled',
   CONFIRMED: 'confirmed',
 };
+
+export const USER_STATUS = {
+  INACTIVE: 'Inactive',
+  ACTIVE: 'Active',
+};

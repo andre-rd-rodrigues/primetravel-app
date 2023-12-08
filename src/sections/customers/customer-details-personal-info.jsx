@@ -6,8 +6,9 @@ import { Card, Stack, Avatar, Typography } from '@mui/material';
 import { getStatusColor } from 'src/utils/layout.utils';
 
 import Label from 'src/components/label';
+import { USER_STATUS } from 'src/constants';
 
-function BookingDetailsCustomer({ customer, booking }) {
+function CustomerDetailsPersonalInfo({ customer }) {
   return (
     <Card
       component={Stack}
@@ -19,11 +20,11 @@ function BookingDetailsCustomer({ customer, booking }) {
         borderRadius: 2,
       }}
     >
-      <Stack spacing={2}>
+      <Stack spacing={3}>
         <Stack display="flex" alignItems="center">
           <Avatar
             src={customer?.avatar?.url}
-            alt={customer?.first_name}
+            alt={customer?.full_name}
             sx={{
               width: 100,
               height: 100,
@@ -31,18 +32,9 @@ function BookingDetailsCustomer({ customer, booking }) {
             }}
           />
           <Typography variant="h4">{customer?.first_name}</Typography>
-        </Stack>
-        <Stack>
-          <Typography fontWeight={700} fontSize={13} marginBottom={0.2}>
-            Booking ID
-          </Typography>
-          <Typography fontSize={13}>{booking?.bookingNumber}</Typography>
-        </Stack>
-        <Stack width={100}>
-          <Typography fontWeight={700} fontSize={13} marginBottom={0.5}>
-            Booking status
-          </Typography>
-          <Label color={getStatusColor(booking?.status)}>{booking?.status}</Label>
+          <Label color={getStatusColor(customer?.isActive)} sx={{ mt: 0.5 }}>
+            {customer?.isActive ? USER_STATUS.ACTIVE : USER_STATUS.INACTIVE}
+          </Label>
         </Stack>
         <Stack>
           <Typography fontWeight={700} fontSize={13} marginBottom={0.2}>
@@ -57,12 +49,18 @@ function BookingDetailsCustomer({ customer, booking }) {
           <Typography fontSize={13}>Phone: {customer?.contacts?.phone_number}</Typography>
           <Typography fontSize={13}>Email: {customer?.contacts?.email}</Typography>
         </Stack>
+        <Stack>
+          <Typography fontWeight={700} fontSize={13} marginBottom={0.2}>
+            ID
+          </Typography>
+          <Typography fontSize={13}>{customer?.id}</Typography>
+        </Stack>
       </Stack>
     </Card>
   );
 }
 
-BookingDetailsCustomer.propTypes = {
+CustomerDetailsPersonalInfo.propTypes = {
   customer: PropTypes.shape({
     avatar: PropTypes.shape({
       url: PropTypes.string,
@@ -73,11 +71,8 @@ BookingDetailsCustomer.propTypes = {
       phone_number: PropTypes.string,
       email: PropTypes.string,
     }),
-  }),
-  booking: PropTypes.shape({
-    bookingNumber: PropTypes.number,
-    status: PropTypes.string.isRequired,
+    isActive: PropTypes.bool,
   }),
 };
 
-export default BookingDetailsCustomer;
+export default CustomerDetailsPersonalInfo;
