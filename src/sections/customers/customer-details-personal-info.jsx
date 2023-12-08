@@ -5,8 +5,9 @@ import { Card, Stack, Avatar, Typography } from '@mui/material';
 
 import { getStatusColor } from 'src/utils/layout.utils';
 
-import Label from 'src/components/label';
 import { USER_STATUS } from 'src/constants';
+
+import Label from 'src/components/label';
 
 function CustomerDetailsPersonalInfo({ customer }) {
   return (
@@ -62,6 +63,7 @@ function CustomerDetailsPersonalInfo({ customer }) {
 
 CustomerDetailsPersonalInfo.propTypes = {
   customer: PropTypes.shape({
+    id: PropTypes.string,
     avatar: PropTypes.shape({
       url: PropTypes.string,
     }),

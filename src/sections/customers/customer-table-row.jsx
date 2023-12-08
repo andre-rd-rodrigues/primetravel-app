@@ -48,9 +48,9 @@ export default function CustomerTableRow({ customer, selected, handleClick }) {
 
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={customer?.full_name} src={customer?.avatar?.url} />
+            <Avatar alt={customer?.first_name} src={customer?.avatar?.url} />
             <Typography variant="subtitle2" noWrap>
-              {customer?.full_name}
+              {customer?.first_name}
             </Typography>
           </Stack>
         </TableCell>
@@ -105,7 +105,7 @@ CustomerTableRow.propTypes = {
   selected: PropTypes.bool.isRequired,
   customer: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    full_name: PropTypes.string.isRequired,
+    first_name: PropTypes.string.isRequired,
     avatar: PropTypes.shape({
       url: PropTypes.string,
     }),

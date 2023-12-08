@@ -1,22 +1,17 @@
-import PropTypes from 'prop-types';
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { useRouter } from 'src/routes/hooks';
+import { RouterLink } from 'src/routes/components';
 
 import Logo from 'src/components/logo';
 
 // ----------------------------------------------------------------------
 
-export default function NotFoundView({
-  title = ' Sorry, page not found!',
-  description = 'Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be sure to check your spelling.',
-}) {
-  const router = useRouter();
+// TODO: Add correct image to server error
 
+export default function SomethingWentWrong() {
   const renderHeader = (
     <Box
       component="header"
@@ -52,10 +47,13 @@ export default function NotFoundView({
           }}
         >
           <Typography variant="h3" sx={{ mb: 3 }}>
-            {title}
+            Oops! Something went wrong.
           </Typography>
 
-          <Typography sx={{ color: 'text.secondary' }}>{description}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>
+            Something went wrong on our server. We&apos;re on it! Apologies for the inconvenience.
+            Please refresh or try again later. Thank you for your patience.
+          </Typography>
 
           <Box
             component="img"
@@ -67,16 +65,11 @@ export default function NotFoundView({
             }}
           />
 
-          <Button size="large" variant="contained" onClick={() => router.back()}>
-            Go back
+          <Button href="/" size="large" variant="contained" component={RouterLink}>
+            Go to Home
           </Button>
         </Box>
       </Container>
     </>
   );
 }
-
-NotFoundView.propTypes = {
-  title: PropTypes.string,
-  description: PropTypes.string,
-};

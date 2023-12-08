@@ -1,6 +1,6 @@
 import { ref } from 'firebase/database';
-import { useObjectVal } from 'react-firebase-hooks/database';
 import { useParams } from 'react-router-dom';
+import { useObjectVal } from 'react-firebase-hooks/database';
 
 import { Container } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -10,10 +10,11 @@ import { ROUTES } from 'src/routes/routes.constants';
 import { db } from 'src/config/firebaseConfig';
 
 import LoadingBox from 'src/components/loading/loading-box';
-import CustomerDetailsPersonalInfo from '../customer-details-personal-info';
 import { DetailsSection } from 'src/components/details-page';
-import { convertBookingsToDisplayFields } from 'src/utils/layout.utils';
+
 import { NotFoundView } from 'src/sections/error';
+
+import CustomerDetailsPersonalInfo from '../customer-details-personal-info';
 
 function CustomerDetailsPage() {
   const { id } = useParams();
@@ -21,21 +22,21 @@ function CustomerDetailsPage() {
   const [customers, loading, error] = useObjectVal(ref(db, ROUTES.CUSTOMERS));
 
   const customer = customers?.filter((obj) => obj.id === id)?.[0];
-  if (!customer || error) {
-    return <NotFoundView />;
-  }
+
   return (
     <Container>
-      {/* Loading spinner  */}
+      {/* Loading customer  */}
       <LoadingBox loading={loading} />
 
-      {!loading && !error && (
+      {/* Customer success */}
+      {!loading && customer && (
         <Grid container spacing={3}>
           <Grid xs={12} sm={4} md={4}>
             <CustomerDetailsPersonalInfo customer={customer} />
           </Grid>
           <Grid xs={12} sm={8} md={8}>
-            {/* Table of bookings */}
+            {/* TODO: Table of bookings */}
+
             <DetailsSection
               content={{
                 title: 'Payment info',
@@ -91,8 +92,18 @@ function CustomerDetailsPage() {
                 ],
               }}
             />
+
+            {/* TODO: Add  */}
           </Grid>
         </Grid>
+      )}
+
+      {/* Customer not found */}
+      {!loading && !customer && (
+        <NotFoundView
+          title="Sorry, customer not found"
+          description="Sorry, we couldn’t find the customer you’re looking for. Perhaps you’ve mistyped the customer ID? Be sure to check your spelling."
+        />
       )}
     </Container>
   );

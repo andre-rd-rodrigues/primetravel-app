@@ -146,7 +146,7 @@ export default function CustomersView() {
                   onRequestSort={handleSort}
                   onSelectAllClick={handleSelectAllClick}
                   headLabel={[
-                    { id: 'fullName', label: 'Name' },
+                    { id: 'firstName', label: 'Name' },
                     { id: 'Sex', label: 'Sex' },
                     { id: 'email', label: 'Email' },
                     { id: 'phone', label: 'Phone' },
