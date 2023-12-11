@@ -1,5 +1,7 @@
 /* eslint-disable perfectionist/sort-imports */
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import 'src/global.css';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 
@@ -12,8 +14,10 @@ export default function App() {
   useScrollToTop();
 
   return (
-    <ThemeProvider>
-      <Router />
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterMoment}>
+      <ThemeProvider>
+        <Router />
+      </ThemeProvider>
+    </LocalizationProvider>
   );
 }

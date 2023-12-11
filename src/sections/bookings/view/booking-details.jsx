@@ -1,7 +1,7 @@
 import React from 'react';
 import { ref } from 'firebase/database';
 import { useParams } from 'react-router-dom';
-import { useObjectVal } from 'react-firebase-hooks/database';
+import { useListVals, useObjectVal } from 'react-firebase-hooks/database';
 
 import { Container } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -20,14 +20,16 @@ import BookingDetailsCustomer from '../booking-details-customer';
 function BookingDetailsPage() {
   const { id } = useParams();
 
-  const [booking, loading, error] = useObjectVal(ref(db, `${ROUTES.BOOKINGS}/${id}`));
+  const [bookings, loading, error] = useListVals(ref(db, ROUTES.BOOKINGS));
+
+  const booking = bookings?.filter((obj) => obj.id === id)?.[0];
 
   return (
     <Container>
       {/* Loading spinner  */}
       <LoadingBox loading={loading} />
 
-      {!loading && !error && (
+      {!loading && booking && (
         <Grid container spacing={3}>
           <Grid item xs={12} sm={4} md={4}>
             <BookingDetailsCustomer customer={booking?.customer} booking={booking} />

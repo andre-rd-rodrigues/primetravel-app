@@ -35,23 +35,21 @@ export function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-export function applyFilter({ inputData, comparator, filterId }) {
-  // Create a copy of inputData with stable indexes
+export function applyFilter({ inputData, comparator, filterValue }) {
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
-  // Sort the stabilized array using the comparator function
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
 
-  // Reassign inputData based on the sorted, stabilized array
   inputData = stabilizedThis.map((el) => el[0]);
 
-  // If filterId is provided, filter the inputData
-  if (filterId !== undefined && filterId !== null) {
-    inputData = inputData.filter((item) => item.bookingNumber === filterId);
+  if (filterValue) {
+    inputData = inputData.filter(
+      (customer) => customer?.first_name?.toLowerCase().indexOf(filterValue.toLowerCase()) !== -1
+    );
   }
 
   return inputData;

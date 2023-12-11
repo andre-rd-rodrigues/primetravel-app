@@ -36,7 +36,7 @@ function BookingDetailsCustomer({ customer, booking }) {
           <Typography fontWeight={700} fontSize={13} marginBottom={0.2}>
             Booking ID
           </Typography>
-          <Typography fontSize={13}>{booking?.bookingNumber}</Typography>
+          <Typography fontSize={13}>{booking?.id}</Typography>
         </Stack>
         <Stack width={100}>
           <Typography fontWeight={700} fontSize={13} marginBottom={0.5}>
@@ -75,7 +75,7 @@ BookingDetailsCustomer.propTypes = {
     }),
   }),
   booking: PropTypes.shape({
-    bookingNumber: PropTypes.number,
+    id: PropTypes.number,
     status: PropTypes.string.isRequired,
   }),
 };

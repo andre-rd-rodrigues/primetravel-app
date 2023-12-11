@@ -104,7 +104,7 @@ export default function CustomerTableRow({ customer, selected, handleClick }) {
 CustomerTableRow.propTypes = {
   selected: PropTypes.bool.isRequired,
   customer: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     first_name: PropTypes.string.isRequired,
     avatar: PropTypes.shape({
       url: PropTypes.string,

@@ -28,6 +28,7 @@ import BookingsTableToolbar from '../bookings-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 import TableNoData from '../../../components/table/table-no-data';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
+import AddBookingModal from '../add-booking-modal';
 
 // ----------------------------------------------------------------------
 
@@ -42,9 +43,11 @@ export default function BookingsView() {
 
   const [orderBy, setOrderBy] = useState('bookingId');
 
-  const [filterBookingId, setFilterBookingId] = useState();
+  const [searchValue, setSearchValue] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [isFormModalOpen, setFormModalOpen] = useState(false);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -86,18 +89,18 @@ export default function BookingsView() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByBookingId = (event) => {
+  const handleSearch = (event) => {
     setPage(0);
-    setFilterBookingId(event.target.value ? parseInt(event.target.value, 10) : undefined);
+    setSearchValue(event.target.value);
   };
 
   const dataFiltered = applyFilter({
     inputData: bookings,
     comparator: getComparator(order, orderBy),
-    filterId: filterBookingId,
+    filterValue: searchValue,
   });
 
-  const notFound = !dataFiltered.length && !!filterBookingId;
+  const notFound = !dataFiltered.length && !!searchValue;
   const minRows = page * rowsPerPage;
   const maxRows = page * rowsPerPage + rowsPerPage;
 
@@ -106,7 +109,12 @@ export default function BookingsView() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Bookings</Typography>
 
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button
+          variant="contained"
+          color="inherit"
+          startIcon={<Iconify icon="eva:plus-fill" />}
+          onClick={() => setFormModalOpen(true)}
+        >
           New booking
         </Button>
       </Stack>
@@ -114,8 +122,8 @@ export default function BookingsView() {
       <Card>
         <BookingsTableToolbar
           numSelected={selected.length}
-          filterValue={filterBookingId}
-          onFilterBooking={handleFilterByBookingId}
+          filterValue={searchValue}
+          onFilterBooking={handleSearch}
         />
 
         <Scrollbar>
@@ -160,7 +168,7 @@ export default function BookingsView() {
                   {dataFiltered.slice(minRows, maxRows).map((row) => (
                     <BookingsTableRow
                       key={row.id}
-                      bookingID={row.bookingNumber}
+                      bookingID={row.id}
                       customer={row?.customer}
                       status={row.status}
                       amount={row?.payment_info?.total_amount}
@@ -174,10 +182,10 @@ export default function BookingsView() {
 
                   <TableEmptyRows
                     height={77}
-                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                    emptyRows={emptyRows(page, rowsPerPage, bookings.length)}
                   />
 
-                  {notFound && <TableNoData query={filterBookingId} />}
+                  {notFound && <TableNoData query={searchValue.trim()} />}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -194,6 +202,8 @@ export default function BookingsView() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+
+      <AddBookingModal open={isFormModalOpen} onClose={() => setFormModalOpen(false)} />
     </Container>
   );
 }

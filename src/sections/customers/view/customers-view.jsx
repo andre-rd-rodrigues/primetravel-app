@@ -42,7 +42,7 @@ export default function CustomersView() {
 
   const [orderBy, setOrderBy] = useState('customerId');
 
-  const [filterBookingId, setFilterBookingId] = useState();
+  const [searchValue, setSearchValue] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -86,18 +86,18 @@ export default function CustomersView() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByBookingId = (event) => {
+  const handleSearch = (event) => {
     setPage(0);
-    setFilterBookingId(event.target.value ? parseInt(event.target.value, 10) : undefined);
+    setSearchValue(event.target.value);
   };
 
   const dataFiltered = applyFilter({
     inputData: customers,
     comparator: getComparator(order, orderBy),
-    filterId: filterBookingId,
+    filterValue: searchValue,
   });
 
-  const notFound = !dataFiltered.length && !!filterBookingId;
+  const notFound = !dataFiltered.length && !!searchValue;
   const minRows = page * rowsPerPage;
   const maxRows = page * rowsPerPage + rowsPerPage;
 
@@ -114,8 +114,8 @@ export default function CustomersView() {
       <Card>
         <CustomersTableToolbar
           numSelected={selected.length}
-          filterValue={filterBookingId}
-          onFilterBooking={handleFilterByBookingId}
+          searchValue={searchValue}
+          onSearch={handleSearch}
         />
 
         <Scrollbar>
@@ -169,7 +169,7 @@ export default function CustomersView() {
                     emptyRows={emptyRows(page, rowsPerPage, users.length)}
                   />
 
-                  {notFound && <TableNoData query={filterBookingId} />}
+                  {notFound && <TableNoData query={searchValue.trim()} />}
                 </TableBody>
               </Table>
             </TableContainer>

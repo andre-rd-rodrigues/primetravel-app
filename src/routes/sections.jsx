@@ -11,7 +11,7 @@ export const BookingsPage = lazy(() => import('src/pages/bookings'));
 export const BookingDetailsPage = lazy(() => import('src/sections/bookings/view/booking-details'));
 export const CustomersPage = lazy(() => import('src/pages/customers'));
 export const CustomerDetailsPage = lazy(() =>
-  import('src/sections/customers/view/customer-details')
+  import('src/sections/customers/customer-details/view/customer-details')
 );
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ProductsPage = lazy(() => import('src/pages/products'));

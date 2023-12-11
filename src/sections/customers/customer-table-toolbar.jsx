@@ -11,7 +11,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function BookingsTableToolbar({ numSelected, filterValue, onFilterBooking }) {
+export default function BookingsTableToolbar({ numSelected, searchValue, onSearch }) {
   return (
     <Toolbar
       sx={{
@@ -31,8 +31,8 @@ export default function BookingsTableToolbar({ numSelected, filterValue, onFilte
         </Typography>
       ) : (
         <OutlinedInput
-          value={filterValue}
-          onChange={onFilterBooking}
+          value={searchValue}
+          onChange={onSearch}
           placeholder="Search customer..."
           startAdornment={
             <InputAdornment position="start">
@@ -45,16 +45,10 @@ export default function BookingsTableToolbar({ numSelected, filterValue, onFilte
         />
       )}
 
-      {numSelected > 0 ? (
+      {numSelected > 0 && (
         <Tooltip title="Delete">
           <IconButton>
             <Iconify icon="eva:trash-2-fill" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
           </IconButton>
         </Tooltip>
       )}
@@ -64,6 +58,6 @@ export default function BookingsTableToolbar({ numSelected, filterValue, onFilte
 
 BookingsTableToolbar.propTypes = {
   numSelected: PropTypes.number,
-  filterValue: PropTypes.string,
-  onFilterBooking: PropTypes.func,
+  searchValue: PropTypes.string,
+  onSearch: PropTypes.func,
 };
