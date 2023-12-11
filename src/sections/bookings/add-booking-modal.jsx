@@ -1,21 +1,28 @@
-import { Stack } from '@mui/material';
+import moment from 'moment';
+import { useState } from 'react';
+import { cloneDeep } from 'lodash';
+import PropTypes from 'prop-types';
+import { v4 as uuidv4 } from 'uuid';
+import { ref, push, child, update } from 'firebase/database';
+
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { Stack } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { child, push, ref, update } from 'firebase/database';
-import { cloneDeep } from 'lodash';
-import moment from 'moment';
-import { useState } from 'react';
-import { mockedBooking } from 'src/_mock/bookings';
-import ToastNotification from 'src/components/toast/toast';
-import { db } from 'src/config/firebaseConfig';
+
 import { useFormValidation } from 'src/routes/hooks';
-import { v4 as uuidv4 } from 'uuid';
-import PropTypes from 'prop-types';
+
+import { STATUS } from 'src/constants';
+import { db } from 'src/config/firebaseConfig';
+import { mockedBooking } from 'src/_mock/bookings';
+
+import ToastNotification from 'src/components/toast/toast';
+
+import BookingStatusDropdown from './booking-status-dropdown';
 
 const AddBookingModal = ({ open, onClose }) => {
   const [notification, setNotification] = useState({
@@ -30,8 +37,17 @@ const AddBookingModal = ({ open, onClose }) => {
     hotelName: [{ test: (value) => !!value, message: 'Hotel name is required' }],
     hotelAddress: [{ test: (value) => !!value, message: 'Hotel address is required' }],
     customerName: [{ test: (value) => !!value, message: 'Customer name is required' }],
-    customerPhoneNumber: [{ test: (value) => !!value, message: 'Phone number is required' }],
-    customerEmail: [{ test: (value) => !!value, message: 'Email is required' }],
+    customerPhoneNumber: [
+      { test: (value) => !!value, message: 'Phone number is required' },
+      {
+        test: (value) => /^\d{3}-\d{3}-\d{4}$/.test(value),
+        message: 'e.g. Valid format: 123-456-7890',
+      },
+    ],
+    customerEmail: [
+      { test: (value) => !!value, message: 'Email is required' },
+      { test: (value) => /.+@.+\..+/.test(value), message: 'Invalid email' },
+    ],
     customerAddress: [{ test: (value) => !!value, message: 'Customer address is required' }],
     departureDate: [{ test: (value) => !!value, message: 'Departure date is required' }],
     returnDate: [{ test: (value) => !!value, message: 'Return date is required' }],
@@ -59,13 +75,15 @@ const AddBookingModal = ({ open, onClose }) => {
       flightNumber: 'AT123',
       seat: '15A',
       amount: '1500.00',
-      status: 'Confirmed',
+      status: STATUS.CONFIRMED,
     },
     validationRules
   );
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    console.log(validateForm(), errors);
 
     if (validateForm()) {
       // Fill the rest of the object properties with default values
@@ -94,10 +112,10 @@ const AddBookingModal = ({ open, onClose }) => {
       // Get a key for a new Post.
       const newBookingKey = push(child(ref(db), 'bookings')).key;
 
-      // Write the new post's data simultaneously in the posts list and the user's post list.
       const updates = {};
       updates[`/bookings/${newBookingKey}`] = bookingData;
 
+      // Update bookings database with new data
       update(ref(db), updates)
         .then(() => {
           setNotification({
@@ -227,13 +245,22 @@ const AddBookingModal = ({ open, onClose }) => {
                 helperText={errors.hotelAddress}
               />
             </Grid>
+
+            <Grid item xs={12}>
+              <BookingStatusDropdown
+                value={data.status}
+                onChange={(e) =>
+                  handleInputChange({ target: { name: 'status', value: e.target.value } })
+                }
+              />
+            </Grid>
           </Grid>
           <Typography variant="subtitle1" gutterBottom marginTop={4}>
             Customer Information
           </Typography>
           <TextField
             label="Customer Name"
-            name="customer.name"
+            name="customerName"
             value={data.customerName}
             onChange={handleInputChange}
             fullWidth
@@ -245,19 +272,19 @@ const AddBookingModal = ({ open, onClose }) => {
             <Grid item xs={6}>
               <TextField
                 label="Phone Number"
-                name="customer.contacts.phoneNumber"
+                name="customerPhoneNumber"
                 value={data.customerPhoneNumber}
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
                 error={!!errors.customerPhoneNumber}
-                helperText={errors.customerPhoneNumber}
+                helperText={errors.customerPhoneNumber || 'e.g. 123-456-7890'}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
                 label="Email"
-                name="customer.contacts.email"
+                name="customerEmail"
                 value={data.customerEmail}
                 onChange={handleInputChange}
                 fullWidth
@@ -269,7 +296,7 @@ const AddBookingModal = ({ open, onClose }) => {
           </Grid>
           <TextField
             label="Customer Address"
-            name="customer.address"
+            name="customerAddress"
             value={data.customerAddress}
             onChange={handleInputChange}
             fullWidth
@@ -284,7 +311,7 @@ const AddBookingModal = ({ open, onClose }) => {
             <Grid item xs={6}>
               <TextField
                 label="Airline Company"
-                name="flightNumber"
+                name="airlineCompanyName"
                 value={data.airlineCompanyName}
                 onChange={handleInputChange}
                 fullWidth
@@ -308,7 +335,7 @@ const AddBookingModal = ({ open, onClose }) => {
           </Grid>
           <TextField
             label="Seat"
-            name="airlineSeat"
+            name="seat"
             value={data.seat}
             onChange={handleInputChange}
             fullWidth

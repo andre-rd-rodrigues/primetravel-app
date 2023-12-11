@@ -24,6 +24,7 @@ export const useFormValidation = (initialData, validationRules) => {
   };
 
   const handleInputChange = (e) => {
+    console.log(e);
     const { name, value } = e.target;
 
     setData((prevData) => ({ ...prevData, [name]: value }));

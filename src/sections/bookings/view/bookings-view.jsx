@@ -22,13 +22,13 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import NoData from 'src/components/noData/noData';
 
+import AddBookingModal from '../add-booking-modal';
 import BookingsTableRow from '../bookings-table-row';
 import BookingsTableHead from '../bookings-table-head';
 import BookingsTableToolbar from '../bookings-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 import TableNoData from '../../../components/table/table-no-data';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
-import AddBookingModal from '../add-booking-modal';
 
 // ----------------------------------------------------------------------
 

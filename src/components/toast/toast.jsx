@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import Snackbar from '@mui/material/Snackbar';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 const ToastNotification = ({ open, onClose, message, type }) => (
   <Snackbar
@@ -16,3 +18,10 @@ const ToastNotification = ({ open, onClose, message, type }) => (
 );
 
 export default ToastNotification;
+
+ToastNotification.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ref } from 'firebase/database';
 import { useParams } from 'react-router-dom';
-import { useListVals, useObjectVal } from 'react-firebase-hooks/database';
+import { useListVals } from 'react-firebase-hooks/database';
 
 import { Container } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
