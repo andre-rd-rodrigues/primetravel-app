@@ -31,6 +31,7 @@ export default function BookingsTableRow({
   amount,
   status,
   handleClick,
+  onDelete,
 }) {
   const [open, setOpen] = useState(null);
   const router = useRouter();
@@ -46,6 +47,11 @@ export default function BookingsTableRow({
   const handleViewBookingDetails = () => {
     router.push(`/bookings/${bookingID}`);
     setOpen(null);
+  };
+
+  const handleDelete = () => {
+    onDelete();
+    handleCloseMenu();
   };
 
   return (
@@ -107,7 +113,7 @@ export default function BookingsTableRow({
           Edit
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
         </MenuItem>
@@ -118,7 +124,7 @@ export default function BookingsTableRow({
 
 BookingsTableRow.propTypes = {
   selected: PropTypes.bool.isRequired,
-  bookingID: PropTypes.number.isRequired,
+  bookingID: PropTypes.string.isRequired,
   customer: PropTypes.shape({
     first_name: PropTypes.string.isRequired,
     avatar: PropTypes.shape({
@@ -134,4 +140,5 @@ BookingsTableRow.propTypes = {
   amount: PropTypes.number.isRequired,
   status: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };

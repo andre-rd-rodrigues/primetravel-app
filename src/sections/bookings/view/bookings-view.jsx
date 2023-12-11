@@ -29,6 +29,7 @@ import BookingsTableToolbar from '../bookings-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 import TableNoData from '../../../components/table/table-no-data';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
+import DeleteBookingModal from '../delete-booking-modal';
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +48,9 @@ export default function BookingsView() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [isFormModalOpen, setFormModalOpen] = useState(false);
+  const [isAddBookingModalOpen, setIsAddBookingModalOpen] = useState(false);
+
+  const [deleteBookingId, setDeleteBookingId] = useState();
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -56,7 +59,7 @@ export default function BookingsView() {
       setOrderBy(id);
     }
   };
-
+  console.log(deleteBookingId);
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = bookings.map((n) => n.bookingNumber);
@@ -113,7 +116,7 @@ export default function BookingsView() {
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={() => setFormModalOpen(true)}
+          onClick={() => setIsAddBookingModalOpen(true)}
         >
           New booking
         </Button>
@@ -177,6 +180,7 @@ export default function BookingsView() {
                       travelDate={row?.travel_info?.dates}
                       selected={selected.includes(row.bookingNumber)}
                       handleClick={(event) => handleClick(event, row.bookingNumber)}
+                      onDelete={() => setDeleteBookingId(row.id)}
                     />
                   ))}
 
@@ -203,7 +207,15 @@ export default function BookingsView() {
         />
       </Card>
 
-      <AddBookingModal open={isFormModalOpen} onClose={() => setFormModalOpen(false)} />
+      <AddBookingModal
+        open={isAddBookingModalOpen}
+        onClose={() => setIsAddBookingModalOpen(false)}
+      />
+      <DeleteBookingModal
+        open={!!deleteBookingId}
+        onClose={() => setDeleteBookingId()}
+        bookingId={deleteBookingId}
+      />
     </Container>
   );
 }

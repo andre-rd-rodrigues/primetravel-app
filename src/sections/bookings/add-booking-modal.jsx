@@ -27,8 +27,8 @@ import BookingStatusDropdown from './booking-status-dropdown';
 const AddBookingModal = ({ open, onClose }) => {
   const [notification, setNotification] = useState({
     open: false,
-    message: undefined,
-    type: 'success', // or 'error' for different severity
+    message: '',
+    type: 'success',
   });
 
   const validationRules = {
@@ -83,8 +83,6 @@ const AddBookingModal = ({ open, onClose }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log(validateForm(), errors);
-
     if (validateForm()) {
       // Fill the rest of the object properties with default values
       const bookingData = cloneDeep(mockedBooking);
@@ -110,10 +108,8 @@ const AddBookingModal = ({ open, onClose }) => {
       bookingData.status = data.status;
 
       // Get a key for a new Post.
-      const newBookingKey = push(child(ref(db), 'bookings')).key;
-
       const updates = {};
-      updates[`/bookings/${newBookingKey}`] = bookingData;
+      updates[`/bookings/${data.bookingId}`] = bookingData;
 
       // Update bookings database with new data
       update(ref(db), updates)

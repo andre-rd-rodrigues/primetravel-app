@@ -21,6 +21,6 @@ const BookingStatusDropdown = ({ onChange, value }) => (
 export default BookingStatusDropdown;
 
 BookingStatusDropdown.propTypes = {
-  value: PropTypes.bool.isRequired,
+  value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };
