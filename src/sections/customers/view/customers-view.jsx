@@ -1,17 +1,17 @@
+import { orderByChild, query, ref } from 'firebase/database';
 import { useState } from 'react';
-import { ref } from 'firebase/database';
 import { useListVals } from 'react-firebase-hooks/database';
 
+import { Box, CircularProgress } from '@mui/material';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-import Typography from '@mui/material/Typography';
-import { Box, CircularProgress } from '@mui/material';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
+import Typography from '@mui/material/Typography';
 
 import { ROUTES } from 'src/routes/routes.constants';
 
@@ -19,20 +19,26 @@ import { users } from 'src/_mock/user';
 import { db } from 'src/config/firebaseConfig';
 
 import Iconify from 'src/components/iconify';
-import Scrollbar from 'src/components/scrollbar';
 import NoData from 'src/components/noData/noData';
-import TableNoData from 'src/components/table/table-no-data';
+import Scrollbar from 'src/components/scrollbar';
 import TableEmptyRows from 'src/components/table/table-empty-rows';
+import TableNoData from 'src/components/table/table-no-data';
 
-import CustomersTableRow from '../customer-table-row';
+import DeleteModal from 'src/components/modal/delete-operation';
+import AddCustomerModal from '../add-customer-modal';
 import CustomersTableHead from '../customer-table-head';
+import CustomersTableRow from '../customer-table-row';
 import CustomersTableToolbar from '../customer-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
+import { applyFilter, emptyRows, getComparator } from '../utils';
 
 // ----------------------------------------------------------------------
 
 export default function CustomersView() {
-  const [customers, loading, error] = useListVals(ref(db, ROUTES.CUSTOMERS));
+  const customersQuery = query(ref(db, ROUTES.CUSTOMERS), orderByChild('created_at'));
+  const [data, loading, error] = useListVals(customersQuery);
+
+  // Firebase Realtime DB does not provide a way to effectively order data
+  const customers = data?.sort((a, b) => b.created_at.localeCompare(a.created_at));
 
   const [page, setPage] = useState(0);
 
@@ -45,6 +51,10 @@ export default function CustomersView() {
   const [searchValue, setSearchValue] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false);
+
+  const [deleteCustomerId, setDeleteCustomerId] = useState();
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -81,6 +91,8 @@ export default function CustomersView() {
     setPage(newPage);
   };
 
+  console.log(customers);
+
   const handleChangeRowsPerPage = (event) => {
     setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -106,7 +118,12 @@ export default function CustomersView() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Customers</Typography>
 
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button
+          variant="contained"
+          onClick={() => setIsAddCustomerModalOpen(true)}
+          color="inherit"
+          startIcon={<Iconify icon="eva:plus-fill" />}
+        >
           New customer
         </Button>
       </Stack>
@@ -161,6 +178,7 @@ export default function CustomersView() {
                       customer={row}
                       selected={selected.includes(row.id)}
                       handleClick={(event) => handleClick(event, row.id)}
+                      onDelete={() => setDeleteCustomerId(row.id)}
                     />
                   ))}
 
@@ -186,6 +204,20 @@ export default function CustomersView() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+
+      <AddCustomerModal
+        open={isAddCustomerModalOpen}
+        onClose={() => setIsAddCustomerModalOpen(false)}
+      />
+      <DeleteModal
+        dataRef={ref(db, `customers/${deleteCustomerId}`)}
+        notificationMessage={{
+          success: 'Customer deleted successfully!',
+          error: 'Error deleting customer. Please try again later.',
+        }}
+        open={!!deleteCustomerId}
+        onClose={() => setDeleteCustomerId()}
+      />
     </Container>
   );
 }

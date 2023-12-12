@@ -22,6 +22,6 @@ export default ToastNotification;
 ToastNotification.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  message: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  message: PropTypes.string,
+  type: PropTypes.string,
 };

@@ -22,7 +22,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function CustomerTableRow({ customer, selected, handleClick }) {
+export default function CustomerTableRow({ customer, selected, handleClick, onDelete }) {
   const [open, setOpen] = useState(null);
   const router = useRouter();
 
@@ -37,6 +37,11 @@ export default function CustomerTableRow({ customer, selected, handleClick }) {
   const handleViewBookingDetails = () => {
     router.push(`/customers/${customer?.id}`);
     setOpen(null);
+  };
+
+  const handleDelete = () => {
+    onDelete();
+    handleCloseMenu();
   };
 
   return (
@@ -92,7 +97,7 @@ export default function CustomerTableRow({ customer, selected, handleClick }) {
           Edit
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
         </MenuItem>
@@ -117,4 +122,5 @@ CustomerTableRow.propTypes = {
     isActive: PropTypes.bool.isRequired,
   }).isRequired,
   handleClick: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };

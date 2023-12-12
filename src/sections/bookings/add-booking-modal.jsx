@@ -108,7 +108,7 @@ const AddBookingModal = ({ open, onClose }) => {
       bookingData.payment_info.total_amount = data.amount;
       bookingData.status = data.status;
 
-      // Get a key for a new Post.
+      // Get a key for a new booking
       const updates = {};
       updates[`/bookings/${data.id}`] = bookingData;
 

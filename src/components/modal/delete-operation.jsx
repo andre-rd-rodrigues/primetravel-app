@@ -1,17 +1,15 @@
+import { remove } from 'firebase/database';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
-import { ref, remove } from 'firebase/database';
+import { useState } from 'react';
 
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
 import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
 
-import { db } from 'src/config/firebaseConfig';
-
-const DeleteBookingModal = ({ open, onClose, bookingId }) => {
+const DeleteModal = ({ open, onClose, dataRef, notificationMessage }) => {
   const [loading, setLoading] = useState(false);
 
   const [notification, setNotification] = useState({
@@ -23,12 +21,11 @@ const DeleteBookingModal = ({ open, onClose, bookingId }) => {
   const handleDelete = () => {
     setLoading(true);
 
-    const bookingRef = ref(db, `bookings/${bookingId}`);
-    remove(bookingRef)
+    remove(dataRef)
       .then(() => {
         setNotification({
           open: true,
-          message: 'Booking deleted successfully!',
+          message: notificationMessage.success,
           type: 'success',
         });
 
@@ -39,7 +36,7 @@ const DeleteBookingModal = ({ open, onClose, bookingId }) => {
         console.log(error);
         setNotification({
           open: true,
-          message: 'Error deleting booking. Please try again later.',
+          message: notificationMessage.error,
           type: 'error',
         });
         setLoading(false);
@@ -75,7 +72,7 @@ const DeleteBookingModal = ({ open, onClose, bookingId }) => {
             Are you sure?
           </Typography>
           <Typography marginY={3.5} textAlign="center">
-            This operation is irreversible. Are you sure you want to delete this booking?
+            This operation is irreversible. Are you sure you want to delete this data?
           </Typography>
           <Box display="flex" justifyContent="flex-end">
             <Button
@@ -109,10 +106,14 @@ const DeleteBookingModal = ({ open, onClose, bookingId }) => {
   );
 };
 
-DeleteBookingModal.propTypes = {
+DeleteModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  bookingId: PropTypes.string,
+  dataRef: PropTypes.any,
+  notificationMessage: PropTypes.shape({
+    success: PropTypes.string,
+    error: PropTypes.string,
+  }),
 };
 
-export default DeleteBookingModal;
+export default DeleteModal;
