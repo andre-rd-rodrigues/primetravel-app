@@ -1,13 +1,15 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import Modal from '@mui/material/Modal';
+import { ref, remove } from 'firebase/database';
+
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import { ref, remove } from 'firebase/database';
+import Typography from '@mui/material/Typography';
+
 import { db } from 'src/config/firebaseConfig';
-import PropTypes from 'prop-types';
 
 const DeleteBookingModal = ({ open, onClose, bookingId }) => {
   const [loading, setLoading] = useState(false);

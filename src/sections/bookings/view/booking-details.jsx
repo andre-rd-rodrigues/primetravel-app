@@ -1,7 +1,7 @@
 import React from 'react';
-import { ref } from 'firebase/database';
 import { useParams } from 'react-router-dom';
 import { useListVals } from 'react-firebase-hooks/database';
+import { ref, query, equalTo, orderByChild } from 'firebase/database';
 
 import { Container } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -14,22 +14,23 @@ import { db } from 'src/config/firebaseConfig';
 
 import LoadingBox from 'src/components/loading/loading-box';
 
+import { NotFoundView } from 'src/sections/error';
+
 import BookingDetailsSection from '../booking-details-section';
 import BookingDetailsCustomer from '../booking-details-customer';
 
 function BookingDetailsPage() {
   const { id } = useParams();
 
-  const [bookings, loading, error] = useListVals(ref(db, ROUTES.BOOKINGS));
-
-  const booking = bookings?.filter((obj) => obj.id === id)?.[0];
+  const bookingQuery = query(ref(db, ROUTES.BOOKINGS), orderByChild('id'), equalTo(id));
+  const [booking, loading, error] = useListVals(bookingQuery)[0];
 
   return (
     <Container>
       {/* Loading spinner  */}
       <LoadingBox loading={loading} />
 
-      {!loading && booking && (
+      {!loading && !!booking && (
         <Grid container spacing={3}>
           <Grid item xs={12} sm={4} md={4}>
             <BookingDetailsCustomer customer={booking?.customer} booking={booking} />
@@ -175,6 +176,14 @@ function BookingDetailsPage() {
             />
           </Grid>
         </Grid>
+      )}
+
+      {/* Customer not found */}
+      {((!loading && !booking) || error) && (
+        <NotFoundView
+          title="Sorry, booking not found"
+          description="Sorry, we couldn’t find the booking you’re looking for. Perhaps you’ve mistyped the booking ID? Be sure to check your spelling."
+        />
       )}
     </Container>
   );

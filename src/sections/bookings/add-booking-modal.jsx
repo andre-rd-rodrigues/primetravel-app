@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { cloneDeep } from 'lodash';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
-import { ref, push, child, update } from 'firebase/database';
+import { ref, update } from 'firebase/database';
 
 import Box from '@mui/material/Box';
 import { Stack } from '@mui/material';

@@ -12,6 +12,7 @@ import Logo from 'src/components/logo';
 // ----------------------------------------------------------------------
 
 export default function NotFoundView({
+  showHeader,
   title = ' Sorry, page not found!',
   description = 'Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be sure to check your spelling.',
 }) {
@@ -35,7 +36,7 @@ export default function NotFoundView({
 
   return (
     <>
-      {renderHeader}
+      {showHeader && renderHeader}
 
       <Container>
         <Box
@@ -44,7 +45,6 @@ export default function NotFoundView({
             maxWidth: 480,
             mx: 'auto',
             display: 'flex',
-            minHeight: '100vh',
             textAlign: 'center',
             alignItems: 'center',
             flexDirection: 'column',
@@ -79,4 +79,5 @@ export default function NotFoundView({
 NotFoundView.propTypes = {
   title: PropTypes.string,
   description: PropTypes.string,
+  showHeader: PropTypes.bool,
 };

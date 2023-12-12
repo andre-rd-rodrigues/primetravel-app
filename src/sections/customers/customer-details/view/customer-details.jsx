@@ -1,8 +1,8 @@
 import moment from 'moment';
 import { useState } from 'react';
-import { ref } from 'firebase/database';
 import { useParams } from 'react-router-dom';
-import { useObjectVal } from 'react-firebase-hooks/database';
+import { useListVals } from 'react-firebase-hooks/database';
+import { ref, query, equalTo, orderByChild } from 'firebase/database';
 
 import Grid from '@mui/material/Unstable_Grid2';
 import {
@@ -40,8 +40,8 @@ function CustomerDetailsPage() {
 
   const { id } = useParams();
 
-  const [customers, loading, error] = useObjectVal(ref(db, ROUTES.CUSTOMERS));
-  const customer = customers?.filter((obj) => obj.id === id)?.[0];
+  const customerQuery = query(ref(db, ROUTES.CUSTOMERS), orderByChild('id'), equalTo(id));
+  const [customer, loading, error] = useListVals(customerQuery)[0];
 
   const handleSort = (event, rowId) => {
     const isAsc = orderBy === rowId && order === 'asc';
@@ -221,7 +221,7 @@ function CustomerDetailsPage() {
       )}
 
       {/* Customer not found */}
-      {!loading && !customer && (
+      {((!loading && !customer) || error) && (
         <NotFoundView
           title="Sorry, customer not found"
           description="Sorry, we couldn’t find the customer you’re looking for. Perhaps you’ve mistyped the customer ID? Be sure to check your spelling."
