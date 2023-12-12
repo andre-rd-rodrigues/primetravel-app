@@ -1,5 +1,4 @@
 export const mockedBooking = {
-  bookingNumber: 0,
   id: '993fb850-4c8e-4b8e-8f09-3dd6e4d1adbc',
   created_at: '2023-10-30T17:06:42.323Z',
   customer: {

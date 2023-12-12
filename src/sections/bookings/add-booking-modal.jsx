@@ -60,7 +60,7 @@ const AddBookingModal = ({ open, onClose }) => {
 
   const { data, errors, validateForm, handleInputChange } = useFormValidation(
     {
-      bookingId: uuidv4(),
+      id: uuidv4(),
       destinationCity: 'New York',
       destinationCountry: 'United States',
       hotelName: 'Grand Hotel',
@@ -74,7 +74,7 @@ const AddBookingModal = ({ open, onClose }) => {
       airlineCompanyName: 'Air Travel Inc.',
       flightNumber: 'AT123',
       seat: '15A',
-      amount: '1500.00',
+      amount: 1500,
       status: STATUS.CONFIRMED,
     },
     validationRules
@@ -88,7 +88,8 @@ const AddBookingModal = ({ open, onClose }) => {
       const bookingData = cloneDeep(mockedBooking);
 
       // Update properties
-      bookingData.id = data.bookingId;
+      bookingData.id = data.id;
+      bookingData.created_at = moment().toISOString();
       bookingData.destination.location.city = data.destinationCity;
       bookingData.destination.location.country = data.destinationCountry;
       bookingData.destination.hotel.name = data.hotelName;
@@ -109,7 +110,7 @@ const AddBookingModal = ({ open, onClose }) => {
 
       // Get a key for a new Post.
       const updates = {};
-      updates[`/bookings/${data.bookingId}`] = bookingData;
+      updates[`/bookings/${data.id}`] = bookingData;
 
       // Update bookings database with new data
       update(ref(db), updates)

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ref } from 'firebase/database';
+import { orderByChild, orderByValue, query, ref } from 'firebase/database';
 import { useListVals } from 'react-firebase-hooks/database';
 
 import Card from '@mui/material/Card';
@@ -34,7 +34,11 @@ import DeleteBookingModal from '../delete-booking-modal';
 // ----------------------------------------------------------------------
 
 export default function BookingsView() {
-  const [bookings, loading, error] = useListVals(ref(db, ROUTES.BOOKINGS));
+  const bookingsQuery = query(ref(db, ROUTES.BOOKINGS), orderByChild('created_at'));
+  const [data, loading, error] = useListVals(bookingsQuery);
+
+  // Firebase Realtime DB does not provide a way to effectively order data
+  const bookings = data?.sort((a, b) => b.created_at.localeCompare(a.created_at));
 
   const [page, setPage] = useState(0);
 
@@ -59,7 +63,7 @@ export default function BookingsView() {
       setOrderBy(id);
     }
   };
-  console.log(deleteBookingId);
+
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = bookings.map((n) => n.bookingNumber);

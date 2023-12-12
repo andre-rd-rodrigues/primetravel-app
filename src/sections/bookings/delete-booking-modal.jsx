@@ -63,20 +63,24 @@ const DeleteBookingModal = ({ open, onClose, bookingId }) => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 400,
+            width: 500,
             bgcolor: 'background.paper',
             boxShadow: 24,
             p: 4,
           }}
         >
-          <Typography variant="h6" gutterBottom textAlign="center">
+          <Typography variant="h4" textAlign="center">
             Are you sure?
           </Typography>
-          <Typography gutterBottom textAlign="center">
+          <Typography marginY={3.5} textAlign="center">
             This operation is irreversible. Are you sure you want to delete this booking?
           </Typography>
-          <Box display="flex" justifyContent="flex-end" marginTop={3}>
-            <Button onClick={onClose} sx={{ marginRight: 2 }} disabled={loading}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              onClick={onClose}
+              sx={{ marginRight: 2, color: 'text.secondary' }}
+              disabled={loading}
+            >
               Cancel
             </Button>
             <Button onClick={handleDelete} variant="contained" color="error" disabled={loading}>
