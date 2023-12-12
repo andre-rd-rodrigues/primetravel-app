@@ -33,8 +33,7 @@ import CustomerDetailsBookingsTableHead from '../customer-details-bookings-table
 
 function CustomerDetailsPage() {
   const [order, setOrder] = useState('asc');
-  const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('bookingId');
+  const [orderBy, setOrderBy] = useState('customerId');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -49,15 +48,6 @@ function CustomerDetailsPage() {
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(rowId);
     }
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = customer?.bookings.map((n) => n.bookingNumber);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -140,9 +130,7 @@ function CustomerDetailsPage() {
                       order={order}
                       orderBy={orderBy}
                       rowCount={customer?.bookings?.length}
-                      numSelected={selected.length}
                       onRequestSort={handleSort}
-                      onSelectAllClick={handleSelectAllClick}
                       headLabel={[
                         { id: 'bookingId', label: 'Booking ID' },
                         { id: 'departure', label: 'Departure' },
@@ -151,15 +139,15 @@ function CustomerDetailsPage() {
                         { id: 'destination', label: 'Destination' },
                         { id: 'amount', label: 'Amount' },
                         { id: 'status', label: 'Status' },
-                        { id: '' },
                       ]}
                     />
                     <TableBody>
                       {customer?.bookings?.slice(minRows, maxRows).map((row) => (
                         <CustomerDetailsBookingsTableRow
                           key={row.id}
-                          bookingID={row.bookingNumber}
+                          bookingID={row.id}
                           customer={row?.customer}
+                          amount={row?.total_amount}
                           status={row.status}
                           destination={row?.destination?.location?.country}
                           airline={row?.travel_info?.airline?.flight_company?.iataCode}
@@ -169,7 +157,6 @@ function CustomerDetailsPage() {
                           returnDate={moment(row?.travel_info?.dates?.end_date).format(
                             'DD-MM-YYYY'
                           )}
-                          selected={selected.includes(row.bookingNumber)}
                         />
                       ))}
 

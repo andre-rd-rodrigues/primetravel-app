@@ -56,7 +56,7 @@ export default function CustomersView() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = customers.map((n) => n.bookingNumber);
+      const newSelecteds = customers.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
