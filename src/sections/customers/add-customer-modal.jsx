@@ -1,14 +1,17 @@
-import { Box, Button, Grid, Modal, Stack, TextField, Typography } from '@mui/material';
 import moment from 'moment';
-import React, { useState } from 'react';
-import { USER_STATUS } from 'src/constants';
-import { useFormValidation } from 'src/routes/hooks';
-import { v4 as uuidv4 } from 'uuid';
 import { cloneDeep } from 'lodash';
 import PropTypes from 'prop-types';
+import { v4 as uuidv4 } from 'uuid';
+import React, { useState } from 'react';
 import { ref, update } from 'firebase/database';
-import { mockedCustomer } from 'src/_mock/customer';
+
+import { Box, Grid, Modal, Stack, Button, TextField, Typography } from '@mui/material';
+
+import { useFormValidation } from 'src/routes/hooks';
+
 import { db } from 'src/config/firebaseConfig';
+import { mockedCustomer } from 'src/_mock/customer';
+
 import ToastNotification from 'src/components/toast/toast';
 
 function AddCustomerModal({ open, onClose }) {

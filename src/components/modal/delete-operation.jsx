@@ -1,11 +1,11 @@
-import { remove } from 'firebase/database';
-import PropTypes from 'prop-types';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { remove } from 'firebase/database';
 
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
 import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
 
