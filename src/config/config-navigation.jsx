@@ -24,7 +24,7 @@ const navConfig = [
   },
   {
     title: 'Packages',
-    path: '/products',
+    path: '/packages',
     icon: icon('ic_packages'),
   },
   {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { query } from 'firebase/database';
 import { useListVals } from 'react-firebase-hooks/database';
-import { ref, query, orderByChild } from 'firebase/database';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -13,10 +13,8 @@ import { Box, CircularProgress } from '@mui/material';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { ROUTES } from 'src/routes/routes.constants';
-
+import { Queries } from 'src/api';
 import { users } from 'src/_mock/user';
-import { db } from 'src/config/firebaseConfig';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -34,7 +32,7 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 // ----------------------------------------------------------------------
 
 export default function CustomersView() {
-  const customersQuery = query(ref(db, ROUTES.CUSTOMERS), orderByChild('created_at'));
+  const customersQuery = query(...Queries.customers);
   const [data, loading, error] = useListVals(customersQuery);
 
   // Firebase Realtime DB does not provide a way to effectively order data
@@ -210,7 +208,7 @@ export default function CustomersView() {
         onClose={() => setIsAddCustomerModalOpen(false)}
       />
       <DeleteModal
-        dataRef={ref(db, `customers/${deleteCustomerId}`)}
+        dataRef={Queries.deleteCustomer(deleteCustomerId)}
         notificationMessage={{
           success: 'Customer deleted successfully!',
           error: 'Error deleting customer. Please try again later.',

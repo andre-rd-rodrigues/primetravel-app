@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { ProductsView } from 'src/sections/products/view';
+import { PackagesView } from 'src/sections/packages/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function ProductsPage() {
         <title> Products | Primetravel </title>
       </Helmet>
 
-      <ProductsView />
+      <PackagesView />
     </>
   );
 }

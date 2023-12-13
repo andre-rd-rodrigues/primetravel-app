@@ -14,7 +14,7 @@ export const CustomerDetailsPage = lazy(() =>
   import('src/sections/customers/customer-details/view/customer-details')
 );
 export const LoginPage = lazy(() => import('src/pages/login'));
-export const ProductsPage = lazy(() => import('src/pages/products'));
+export const PackagesPage = lazy(() => import('src/pages/packages'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
@@ -40,7 +40,7 @@ export default function Router() {
         { path: 'bookings', element: <BookingsPage /> },
         { path: 'customers/:id', element: <CustomerDetailsPage /> },
         { path: 'customers', element: <CustomersPage /> },
-        { path: 'products', element: <ProductsPage /> },
+        { path: 'packages', element: <PackagesPage /> },
         { path: 'blog', element: <BlogPage /> },
       ],
     },
