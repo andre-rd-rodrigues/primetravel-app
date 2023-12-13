@@ -4,11 +4,11 @@ import { PackagesView } from 'src/sections/packages/view';
 
 // ----------------------------------------------------------------------
 
-export default function ProductsPage() {
+export default function PackagesPage() {
   return (
     <>
       <Helmet>
-        <title> Products | Primetravel </title>
+        <title> Packages | Primetravel </title>
       </Helmet>
 
       <PackagesView />

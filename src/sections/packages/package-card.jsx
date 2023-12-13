@@ -13,7 +13,7 @@ export default function PackageCard({ packageItem }) {
     <Box
       component="img"
       alt={packageItem.title}
-      src={packageItem.images[0]}
+      src={packageItem.imageUrl}
       sx={{
         top: 0,
         width: 1,
