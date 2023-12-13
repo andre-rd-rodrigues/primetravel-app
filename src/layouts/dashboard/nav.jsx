@@ -10,7 +10,7 @@ import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import ListItemButton from '@mui/material/ListItemButton';
 
-import { usePathname } from 'src/routes/hooks';
+import { usePathname, useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -22,6 +22,7 @@ import Scrollbar from 'src/components/scrollbar';
 
 import { NAV } from '../../config/config-layout';
 import navConfig from '../../config/config-navigation';
+import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -70,30 +71,31 @@ export default function Nav({ openNav, onCloseNav }) {
     </Stack>
   );
 
-  const renderUpgrade = (
+  const renderProfilePromotion = (
     <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
       <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-        <Box
-          component="img"
-          src="/assets/illustrations/illustration_avatar.png"
-          sx={{ width: 100, position: 'absolute', top: -50 }}
+        <Avatar
+          alt="Andre Rodrigo"
+          src="/assets/images/avatars/andre.png"
+          sx={{ width: 100, height: 100 }}
         />
 
         <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="h6">Get more?</Typography>
+          <Typography variant="h6">What do you think?</Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
-            From only $69
+            This dynamic CI/CD project is continuously evolving with exciting features on the
+            horizon! Feel free to connect with me if you find this appealing 🎉
           </Typography>
         </Box>
 
         <Button
-          href="https://material-ui.com/store/items/minimal-dashboard/"
+          href="https://linktr.ee/andre.webstudio"
           target="_blank"
           variant="contained"
           color="inherit"
         >
-          Upgrade to Pro
+          Reach out
         </Button>
       </Stack>
     </Box>
@@ -110,7 +112,7 @@ export default function Nav({ openNav, onCloseNav }) {
         },
       }}
     >
-      <Logo sx={{ mt: 3, ml: 4 }} />
+      <Logo sx={{ margin: 'auto', mt: 4 }} />
 
       {renderAccount}
 
@@ -118,7 +120,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      {renderUpgrade}
+      {renderProfilePromotion}
     </Scrollbar>
   );
 
@@ -165,12 +167,20 @@ Nav.propTypes = {
 // ----------------------------------------------------------------------
 
 function NavItem({ item }) {
+  const { signOut } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
 
   const active = item.path === pathname;
 
   return (
     <ListItemButton
+      onClick={() =>
+        item.title === 'logout' &&
+        signOut().then(() => {
+          router.push('/login');
+        })
+      }
       component={RouterLink}
       href={item.path}
       sx={{

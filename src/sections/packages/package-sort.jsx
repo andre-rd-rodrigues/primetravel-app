@@ -83,5 +83,5 @@ export default function PackageSort({ onselect }) {
 }
 
 PackageSort.propTypes = {
-  onselect: PropTypes.func(),
+  onselect: PropTypes.func,
 };

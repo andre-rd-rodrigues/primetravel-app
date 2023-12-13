@@ -48,13 +48,13 @@ export default function LoginView() {
   const renderForm = (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" defaultValue="andreptrodrigo@gmail.com" />
+        <TextField name="email" label="Email address" defaultValue="demo@primetravel.com" />
 
         <TextField
           name="password"
           label="Password"
           type={showPassword ? 'text' : 'password'}
-          defaultValue="primetravelPassword123!"
+          defaultValue="IHopeYouEnjoyThisProject!"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -107,8 +107,10 @@ export default function LoginView() {
             maxWidth: 420,
           }}
         >
-          <Typography variant="h4">Primetravel Logo</Typography>
-          <Typography variant="h4">Login</Typography>
+          <Box component="img" src="/assets/logo_icon.png" sx={{ width: 100 }} />
+          <Typography variant="h4" marginTop={2}>
+            Login
+          </Typography>
 
           <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
             Don’t have an account?

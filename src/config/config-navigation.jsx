@@ -27,14 +27,14 @@ const navConfig = [
     path: '/packages',
     icon: icon('ic_packages'),
   },
-  {
+  /* {
     title: 'Destinations',
     path: '/Destinations',
     icon: icon('ic_destinations'),
-  },
+  }, */
   {
     title: 'logout',
-    path: '/logout',
+    path: null,
     icon: icon('ic_logout'),
   },
 ];

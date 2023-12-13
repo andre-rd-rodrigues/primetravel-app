@@ -7,7 +7,7 @@ function useAuth() {
   const [user, setUser] = useState(undefined);
   const [loading, setLoading] = useState(false);
 
-  const isLoggedIn = localStorage.getItem(
+  const isLoggedIn = !!localStorage.getItem(
     'firebase:host:primetravel-162f2-default-rtdb.europe-west1.firebasedatabase.app'
   );
 
