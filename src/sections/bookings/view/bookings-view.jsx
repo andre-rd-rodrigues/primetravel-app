@@ -32,7 +32,7 @@ import TableEmptyRows from '../../../components/table/table-empty-rows';
 // ----------------------------------------------------------------------
 
 export default function BookingsView() {
-  const bookingsQuery = query(Queries.bookings);
+  const bookingsQuery = query(...Queries.getBookingsQuery());
   const [data, loading, error] = useListVals(bookingsQuery);
 
   // Firebase Realtime DB does not provide a way to effectively order data
@@ -214,7 +214,7 @@ export default function BookingsView() {
         onClose={() => setIsAddBookingModalOpen(false)}
       />
       <DeleteModal
-        dataRef={Queries.deleteBooking(deleteBookingId)}
+        dataRef={Queries.deleteBookingQuery(deleteBookingId)}
         notificationMessage={{
           success: 'Booking deleted successfully!',
           error: 'Error deleting booking. Please try again later.',

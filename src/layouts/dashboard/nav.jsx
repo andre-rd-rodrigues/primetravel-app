@@ -81,11 +81,11 @@ export default function Nav({ openNav, onCloseNav }) {
         />
 
         <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="h6">What do you think?</Typography>
+          <Typography variant="h6">Hi there! 👋🏼</Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
-            This dynamic CI/CD project is continuously evolving with exciting features on the
-            horizon! Feel free to connect with me if you find this appealing 🎉
+            This dynamic project is continuously evolving with exciting features on the horizon. If
+            you enjoyed this app, let&apos;s talk! ☕️
           </Typography>
         </Box>
 

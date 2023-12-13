@@ -32,7 +32,7 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 // ----------------------------------------------------------------------
 
 export default function CustomersView() {
-  const customersQuery = query(...Queries.customers);
+  const customersQuery = query(...Queries.getCustomersQuery());
   const [data, loading, error] = useListVals(customersQuery);
 
   // Firebase Realtime DB does not provide a way to effectively order data
@@ -208,7 +208,7 @@ export default function CustomersView() {
         onClose={() => setIsAddCustomerModalOpen(false)}
       />
       <DeleteModal
-        dataRef={Queries.deleteCustomer(deleteCustomerId)}
+        dataRef={Queries.deleteCustomerQuery(deleteCustomerId)}
         notificationMessage={{
           success: 'Customer deleted successfully!',
           error: 'Error deleting customer. Please try again later.',

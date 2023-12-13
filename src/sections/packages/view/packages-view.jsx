@@ -18,7 +18,7 @@ import { SORT_OPTIONS } from '../packages.constants';
 // ----------------------------------------------------------------------
 
 export default function PackagesView() {
-  const [packages, loading, error] = useListVals(Queries.PACKAGES);
+  const [packages, loading, error] = useListVals(Queries.getPackagesQuery());
 
   const [sortedPackages, setSortedPackages] = useState([]);
 

@@ -13,11 +13,11 @@ const LANGS = [
     label: 'English',
     icon: '/assets/icons/ic_flag_en.svg',
   },
-  {
+  /*   {
     value: 'pt',
     label: 'Portuguese',
-    icon: '/assets/icons/ic_flag_de.svg',
-  },
+    icon: '',
+  }, */
 ];
 
 // ----------------------------------------------------------------------

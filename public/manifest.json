@@ -1,6 +1,6 @@
 {
-  "short_name": "Minimal App",
-  "name": "React Material Primetravel Kit",
+  "short_name": "Primetravel",
+  "name": "Primetravel - Smooth Travel Management",
   "icons": [
     {
       "src": "favicon/android-chrome-192x192.png",
