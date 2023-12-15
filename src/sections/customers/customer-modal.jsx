@@ -1,23 +1,21 @@
 import moment from 'moment';
-import { cloneDeep } from 'lodash';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
-import React, { useState } from 'react';
-import { update, ref as dbRef } from 'firebase/database';
-import { getDownloadURL, ref as storageRef, uploadBytesResumable } from 'firebase/storage';
+import { useState, useEffect } from 'react';
 
 import { Box, Grid, Modal, Stack, Button, TextField, Typography } from '@mui/material';
 
 import { useFormValidation } from 'src/routes/hooks';
 
-import { mockedCustomer } from 'src/_mock/customer';
-import { db, storage } from 'src/config/firebaseConfig';
-
 import ToastNotification from 'src/components/toast/toast';
 
 import AvatarLoader from './avatar-loader';
+import { addNewCustomer, updateExistingCustomer } from './customers.api';
 
-function AddCustomerModal({ open, onClose }) {
+function CustomerModal({ open, onClose, customer }) {
+  const [formInitFields, setFormInitFields] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const [notification, setNotification] = useState({
     open: false,
     message: '',
@@ -43,110 +41,78 @@ function AddCustomerModal({ open, onClose }) {
   };
 
   const { data, errors, validateForm, handleInputChange } = useFormValidation(
-    {
-      created_at: moment().toISOString(),
-      id: uuidv4(),
-      firstName: 'John',
-      lastName: 'Doe',
-      phoneNumber: '123-456-7890',
-      email: 'john.doe@example.com',
-      address: '456 Oak St, New York, 10002',
-      iban: 'KW61WLNA215395165088U778496719',
-      sex: 'male',
-      imageUpload: undefined,
-    },
+    formInitFields,
     validationRules
   );
 
   const handleSubmit = (e) => {
+    setLoading(true);
     e.preventDefault();
 
     if (validateForm()) {
-      // Fill the rest of the object properties with default values
-      const customerData = cloneDeep(mockedCustomer);
+      // Common request object
+      const requestObject = {
+        data,
+        notification: (messageObj) => setNotification(messageObj),
+        onSuccess: () => {
+          setLoading(false);
+          handleClose();
+        },
+        onError: (error) => {
+          console.error(error);
+          setLoading(false);
+        },
+      };
 
-      customerData.id = data.id;
-      customerData.sex = data.sex;
-      customerData.created_at = data.created_at;
-      customerData.first_name = data.firstName;
-      customerData.last_name = data.lastName;
-      customerData.contacts.phone_number = data.phoneNumber;
-      customerData.contacts.email = data.email;
-      customerData.address.street = data.address;
-      customerData.payment_info.iban = data.iban;
-
-      const updates = {};
-      updates[`/customers/${data.id}`] = customerData;
-
-      if (data.imageUpload) {
-        const storageRefLocal = storageRef(storage, `files/${data.imageUpload.name}`);
-        const uploadTask = uploadBytesResumable(storageRefLocal, data.imageUpload);
-
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            // Handle state change if needed
-          },
-          (error) => {
-            console.log(error);
-            setNotification({
-              open: true,
-              message: 'Something went wrong while uploading the image. Please try again later.',
-              severity: 'error',
-            });
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              // Update avatar properties
-              customerData.avatar.url = downloadURL;
-              customerData.avatar.name = data.imageUpload.name;
-              customerData.avatar.type = data.imageUpload.type;
-
-              // Add new customer with image to DB
-              update(dbRef(db), updates)
-                .then(() => {
-                  setNotification({
-                    open: true,
-                    message: 'New customer created successfully!',
-                    severity: 'success',
-                  });
-                  onClose();
-                })
-                .catch(() => {
-                  setNotification({
-                    open: true,
-                    message: 'Something went wrong. Please try again later.',
-                    severity: 'error',
-                  });
-                });
-            });
-          }
-        );
+      if (customer) {
+        // Update existing customer
+        updateExistingCustomer(requestObject);
       } else {
-        // Add new customer to DB
-        update(dbRef(db), updates)
-          .then(() => {
-            setNotification({
-              open: true,
-              message: 'New customer created successfully!',
-              severity: 'success',
-            });
-            onClose();
-          })
-          .catch(() => {
-            setNotification({
-              open: true,
-              message: 'Something went wrong. Please try again later.',
-              severity: 'error',
-            });
-          });
+        // Add new customer
+        addNewCustomer(requestObject);
       }
     }
   };
 
+  const handleClose = (_, reason) => {
+    if (reason !== 'backdropClick') {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    if (customer) {
+      setFormInitFields({
+        created_at: customer.created_at,
+        id: customer.id,
+        firstName: customer.first_name,
+        lastName: customer.last_name,
+        phoneNumber: customer.contacts.phone_number,
+        email: customer.contacts.email,
+        address: customer.address.street,
+        iban: customer.payment_info.iban,
+        sex: customer.sex,
+        imageUrl: customer.avatar.url,
+      });
+    } else {
+      setFormInitFields({
+        created_at: moment().toISOString(),
+        id: uuidv4(),
+        firstName: 'John',
+        lastName: 'Doe',
+        phoneNumber: '123-456-7890',
+        email: 'john.doe@example.com',
+        address: '456 Oak St, New York, 10002',
+        iban: 'KW61WLNA215395165088U778496719',
+        sex: 'male',
+        imageUpload: undefined,
+      });
+    }
+  }, [customer]);
+
   return (
     <>
-      <Modal open={open} onClose={onClose}>
+      <Modal open={open} onClose={handleClose}>
         <Box
           onSubmit={handleSubmit}
           component="form"
@@ -166,6 +132,8 @@ function AddCustomerModal({ open, onClose }) {
           </Typography>
           <Grid container spacing={2}>
             <AvatarLoader
+              loading={loading}
+              avatar={data.imageUrl}
               onSelectImage={(selectedImage) =>
                 handleInputChange({
                   target: {
@@ -177,6 +145,7 @@ function AddCustomerModal({ open, onClose }) {
             />
             <Grid item xs={6}>
               <TextField
+                disabled={loading}
                 label="First Name"
                 name="firstName"
                 value={data.firstName}
@@ -189,6 +158,7 @@ function AddCustomerModal({ open, onClose }) {
             </Grid>
             <Grid item xs={6}>
               <TextField
+                disabled={loading}
                 label="Last Name"
                 name="lastName"
                 value={data.lastName}
@@ -203,6 +173,7 @@ function AddCustomerModal({ open, onClose }) {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <TextField
+                disabled={loading}
                 label="Phone Number"
                 name="phoneNumber"
                 value={data.phoneNumber}
@@ -215,6 +186,7 @@ function AddCustomerModal({ open, onClose }) {
             </Grid>
             <Grid item xs={6}>
               <TextField
+                disabled={loading}
                 label="Email"
                 name="email"
                 value={data.email}
@@ -227,6 +199,7 @@ function AddCustomerModal({ open, onClose }) {
             </Grid>
           </Grid>
           <TextField
+            disabled={loading}
             label="Address"
             name="address"
             value={data.address}
@@ -237,6 +210,7 @@ function AddCustomerModal({ open, onClose }) {
             helperText={errors.address}
           />
           <TextField
+            disabled={loading}
             label="IBAN"
             name="iban"
             value={data.iban}
@@ -247,11 +221,17 @@ function AddCustomerModal({ open, onClose }) {
             helperText={errors.iban}
           />
           <Stack direction="row" gap={2} marginTop={3} justifyContent="flex-end">
-            <Button sx={{ color: 'text.secondary' }} onClick={onClose}>
+            <Button disabled={loading} sx={{ color: 'text.secondary' }} onClick={onClose}>
               Cancel
             </Button>
-            <Button variant="contained" color="success" type="submit" onClick={handleSubmit}>
-              Save
+            <Button
+              disabled={loading}
+              variant="contained"
+              color="success"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              {customer ? 'Update' : 'Save'}
             </Button>
           </Stack>
         </Box>
@@ -266,9 +246,10 @@ function AddCustomerModal({ open, onClose }) {
   );
 }
 
-export default AddCustomerModal;
+export default CustomerModal;
 
-AddCustomerModal.propTypes = {
+CustomerModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  customer: PropTypes.object,
 };

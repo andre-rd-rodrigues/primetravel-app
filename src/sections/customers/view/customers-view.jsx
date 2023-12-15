@@ -23,7 +23,7 @@ import TableNoData from 'src/components/table/table-no-data';
 import DeleteModal from 'src/components/modal/delete-operation';
 import TableEmptyRows from 'src/components/table/table-empty-rows';
 
-import AddCustomerModal from '../add-customer-modal';
+import CustomerModal from '../customer-modal';
 import CustomersTableRow from '../customer-table-row';
 import CustomersTableHead from '../customer-table-head';
 import CustomersTableToolbar from '../customer-table-toolbar';
@@ -50,7 +50,8 @@ export default function CustomersView() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false);
+  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+  const [editCustomer, setEditCustomer] = useState();
 
   const [deleteCustomerId, setDeleteCustomerId] = useState();
 
@@ -71,7 +72,7 @@ export default function CustomersView() {
     setSelected([]);
   };
 
-  const handleClick = (event, rowId) => {
+  const handleCheck = (event, rowId) => {
     const newSelected = [...selected];
 
     if (selected.includes(rowId)) {
@@ -84,6 +85,8 @@ export default function CustomersView() {
 
     return setSelected(newSelected);
   };
+
+  const handleCloseModal = () => (editCustomer ? setEditCustomer() : setIsCustomerModalOpen(false));
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -116,7 +119,7 @@ export default function CustomersView() {
 
         <Button
           variant="contained"
-          onClick={() => setIsAddCustomerModalOpen(true)}
+          onClick={() => setIsCustomerModalOpen(true)}
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
         >
@@ -173,8 +176,9 @@ export default function CustomersView() {
                       key={row.id}
                       customer={row}
                       selected={selected.includes(row.id)}
-                      handleClick={(event) => handleClick(event, row.id)}
+                      onCheck={(event) => handleCheck(event, row.id)}
                       onDelete={() => setDeleteCustomerId(row.id)}
+                      onEditRow={(customer) => setEditCustomer(customer)}
                     />
                   ))}
 
@@ -201,10 +205,12 @@ export default function CustomersView() {
         />
       </Card>
 
-      <AddCustomerModal
-        open={isAddCustomerModalOpen}
-        onClose={() => setIsAddCustomerModalOpen(false)}
+      <CustomerModal
+        open={isCustomerModalOpen || !!editCustomer}
+        onClose={handleCloseModal}
+        customer={editCustomer}
       />
+
       <DeleteModal
         dataRef={Queries.deleteCustomerQuery(deleteCustomerId)}
         notificationMessage={{

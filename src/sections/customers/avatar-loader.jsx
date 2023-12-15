@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Stack, Avatar, Button } from '@mui/material';
 
-const AvatarLoader = ({ onSelectImage }) => {
-  const [file, setFile] = useState();
+const AvatarLoader = ({ avatar, onSelectImage, loading }) => {
+  const [file, setFile] = useState(avatar);
 
   const handleImageUpload = (e) => {
     const selectedFile = e.target.files[0];
@@ -15,11 +15,16 @@ const AvatarLoader = ({ onSelectImage }) => {
     onSelectImage(selectedFile);
   };
 
+  useEffect(() => {
+    if (avatar) setFile(avatar);
+  }, [avatar]);
+
   return (
     <Stack width="100%" alignItems="center" margin={3}>
       <Avatar src={file} alt="User Avatar" sx={{ width: 120, height: 120 }} />
       <label htmlFor="avatar-input">
         <input
+          disabled={loading}
           accept="image/*"
           type="file"
           id="avatar-input"
@@ -28,7 +33,7 @@ const AvatarLoader = ({ onSelectImage }) => {
             display: 'none', // Hide the default file input button
           }}
         />
-        <Button component="span" variant="contained" sx={{ marginTop: 1 }}>
+        <Button disabled={loading} component="span" variant="contained" sx={{ marginTop: 1 }}>
           Choose Image
         </Button>
       </label>
@@ -40,4 +45,6 @@ export default AvatarLoader;
 
 AvatarLoader.propTypes = {
   onSelectImage: PropTypes.func.isRequired,
+  avatar: PropTypes.any,
+  loading: PropTypes.bool.isRequired,
 };

@@ -22,7 +22,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function CustomerTableRow({ customer, selected, handleClick, onDelete }) {
+export default function CustomerTableRow({ customer, selected, onCheck, onDelete, onEditRow }) {
   const [open, setOpen] = useState(null);
   const router = useRouter();
 
@@ -44,11 +44,16 @@ export default function CustomerTableRow({ customer, selected, handleClick, onDe
     handleCloseMenu();
   };
 
+  const handleEditRow = () => {
+    onEditRow(customer);
+    handleCloseMenu();
+  };
+
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox disableRipple checked={selected} onChange={handleClick} />
+          <Checkbox disableRipple checked={selected} onChange={onCheck} />
         </TableCell>
 
         <TableCell component="th" scope="row" padding="none">
@@ -92,7 +97,7 @@ export default function CustomerTableRow({ customer, selected, handleClick, onDe
           View
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={handleEditRow}>
           <Iconify icon="iconamoon:edit" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
@@ -121,6 +126,7 @@ CustomerTableRow.propTypes = {
     }),
     isActive: PropTypes.bool.isRequired,
   }).isRequired,
-  handleClick: PropTypes.func.isRequired,
+  onCheck: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onEditRow: PropTypes.func.isRequired,
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const useFormValidation = (initialData, validationRules) => {
   const [data, setData] = useState(initialData);
@@ -28,6 +28,10 @@ export const useFormValidation = (initialData, validationRules) => {
 
     setData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
 
   return { data, errors, validateForm, handleInputChange };
 };
