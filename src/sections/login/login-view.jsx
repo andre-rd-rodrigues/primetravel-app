@@ -15,7 +15,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
 
-import useLogin from 'src/hooks/useAuth';
+import useAuth from 'src/hooks/useAuth';
 
 import { bgGradient } from 'src/theme/css';
 
@@ -25,12 +25,12 @@ import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
+  const [showPassword, setShowPassword] = useState(false);
+
   const theme = useTheme();
 
   const router = useRouter();
-  const { signIn } = useLogin();
-
-  const [showPassword, setShowPassword] = useState(false);
+  const { signIn, loading } = useAuth();
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -73,7 +73,14 @@ export default function LoginView() {
         </Link>
       </Stack>
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" color="inherit">
+      <LoadingButton
+        fullWidth
+        loading={loading}
+        size="large"
+        type="submit"
+        variant="contained"
+        color="inherit"
+      >
         Login
       </LoadingButton>
     </>

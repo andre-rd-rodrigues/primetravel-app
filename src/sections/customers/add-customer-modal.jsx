@@ -3,16 +3,18 @@ import { cloneDeep } from 'lodash';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import React, { useState } from 'react';
-import { ref, update } from 'firebase/database';
+import { ref as dbRef, update } from 'firebase/database';
 
 import { Box, Grid, Modal, Stack, Button, TextField, Typography } from '@mui/material';
 
 import { useFormValidation } from 'src/routes/hooks';
 
-import { db } from 'src/config/firebaseConfig';
+import { db, storage } from 'src/config/firebaseConfig';
 import { mockedCustomer } from 'src/_mock/customer';
 
 import ToastNotification from 'src/components/toast/toast';
+import AvatarLoader from './avatar-loader';
+import { uploadBytesResumable, ref as storageRef, getDownloadURL } from 'firebase/storage';
 
 function AddCustomerModal({ open, onClose }) {
   const [notification, setNotification] = useState({
@@ -50,12 +52,13 @@ function AddCustomerModal({ open, onClose }) {
       address: '456 Oak St, New York, 10002',
       iban: 'KW61WLNA215395165088U778496719',
       sex: 'male',
+      imageUpload: undefined,
     },
     validationRules
   );
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     if (validateForm()) {
       // Fill the rest of the object properties with default values
@@ -71,27 +74,72 @@ function AddCustomerModal({ open, onClose }) {
       customerData.address.street = data.address;
       customerData.payment_info.iban = data.iban;
 
-      // Get a key for a new customer.
       const updates = {};
       updates[`/customers/${data.id}`] = customerData;
 
-      // Update database with new data
-      update(ref(db), updates)
-        .then(() => {
-          setNotification({
-            open: true,
-            message: 'New customer created successfully!',
-            severity: 'success',
+      if (data.imageUpload) {
+        const storageRefLocal = storageRef(storage, `files/${data.imageUpload.name}`);
+        const uploadTask = uploadBytesResumable(storageRefLocal, data.imageUpload);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // Handle state change if needed
+          },
+          (error) => {
+            console.log(error);
+            setNotification({
+              open: true,
+              message: 'Something went wrong while uploading the image. Please try again later.',
+              severity: 'error',
+            });
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              // Update avatar properties
+              customerData.avatar.url = downloadURL;
+              customerData.avatar.name = data.imageUpload.name;
+              customerData.avatar.type = data.imageUpload.type;
+
+              // Add new customer with image to DB
+              update(dbRef(db), updates)
+                .then(() => {
+                  setNotification({
+                    open: true,
+                    message: 'New customer created successfully!',
+                    severity: 'success',
+                  });
+                  onClose();
+                })
+                .catch(() => {
+                  setNotification({
+                    open: true,
+                    message: 'Something went wrong. Please try again later.',
+                    severity: 'error',
+                  });
+                });
+            });
+          }
+        );
+      } else {
+        // Add new customer to DB
+        update(dbRef(db), updates)
+          .then(() => {
+            setNotification({
+              open: true,
+              message: 'New customer created successfully!',
+              severity: 'success',
+            });
+            onClose();
+          })
+          .catch(() => {
+            setNotification({
+              open: true,
+              message: 'Something went wrong. Please try again later.',
+              severity: 'error',
+            });
           });
-          onClose();
-        })
-        .catch(() => {
-          setNotification({
-            open: true,
-            message: 'Something went wrong. Please try again later.',
-            severity: 'error',
-          });
-        });
+      }
     }
   };
 
@@ -116,6 +164,16 @@ function AddCustomerModal({ open, onClose }) {
             New Customer
           </Typography>
           <Grid container spacing={2}>
+            <AvatarLoader
+              onSelectImage={(selectedImage) =>
+                handleInputChange({
+                  target: {
+                    value: selectedImage,
+                    name: 'imageUpload',
+                  },
+                })
+              }
+            />
             <Grid item xs={6}>
               <TextField
                 label="First Name"

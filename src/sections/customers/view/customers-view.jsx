@@ -89,8 +89,6 @@ export default function CustomersView() {
     setPage(newPage);
   };
 
-  console.log(customers);
-
   const handleChangeRowsPerPage = (event) => {
     setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
