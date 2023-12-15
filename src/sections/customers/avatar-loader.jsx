@@ -1,5 +1,7 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Avatar, Button, Modal, Stack, Typography } from '@mui/material';
+
+import { Stack, Avatar, Button } from '@mui/material';
 
 const AvatarLoader = ({ onSelectImage }) => {
   const [file, setFile] = useState();
@@ -35,3 +37,7 @@ const AvatarLoader = ({ onSelectImage }) => {
 };
 
 export default AvatarLoader;
+
+AvatarLoader.propTypes = {
+  onSelectImage: PropTypes.func.isRequired,
+};

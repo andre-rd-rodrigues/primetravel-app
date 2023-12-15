@@ -10,9 +10,10 @@ import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import ListItemButton from '@mui/material/ListItemButton';
 
-import { usePathname, useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
+import { useRouter, usePathname } from 'src/routes/hooks';
 
+import useAuth from 'src/hooks/useAuth';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { account } from 'src/_mock/account';
@@ -22,7 +23,6 @@ import Scrollbar from 'src/components/scrollbar';
 
 import { NAV } from '../../config/config-layout';
 import navConfig from '../../config/config-navigation';
-import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 

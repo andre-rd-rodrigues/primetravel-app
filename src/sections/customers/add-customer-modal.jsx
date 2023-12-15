@@ -3,18 +3,19 @@ import { cloneDeep } from 'lodash';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import React, { useState } from 'react';
-import { ref as dbRef, update } from 'firebase/database';
+import { update, ref as dbRef } from 'firebase/database';
+import { getDownloadURL, ref as storageRef, uploadBytesResumable } from 'firebase/storage';
 
 import { Box, Grid, Modal, Stack, Button, TextField, Typography } from '@mui/material';
 
 import { useFormValidation } from 'src/routes/hooks';
 
-import { db, storage } from 'src/config/firebaseConfig';
 import { mockedCustomer } from 'src/_mock/customer';
+import { db, storage } from 'src/config/firebaseConfig';
 
 import ToastNotification from 'src/components/toast/toast';
+
 import AvatarLoader from './avatar-loader';
-import { uploadBytesResumable, ref as storageRef, getDownloadURL } from 'firebase/storage';
 
 function AddCustomerModal({ open, onClose }) {
   const [notification, setNotification] = useState({

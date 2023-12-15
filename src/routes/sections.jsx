@@ -6,7 +6,6 @@ import useAuth from 'src/hooks/useAuth';
 import DashboardLayout from 'src/layouts/dashboard';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
-export const BlogPage = lazy(() => import('src/pages/blog'));
 export const BookingsPage = lazy(() => import('src/pages/bookings'));
 export const BookingDetailsPage = lazy(() => import('src/sections/bookings/view/booking-details'));
 export const CustomersPage = lazy(() => import('src/pages/customers'));
@@ -41,7 +40,6 @@ export default function Router() {
         { path: 'customers/:id', element: <CustomerDetailsPage /> },
         { path: 'customers', element: <CustomersPage /> },
         { path: 'packages', element: <PackagesPage /> },
-        { path: 'blog', element: <BlogPage /> },
       ],
     },
     // Redirect to home if already logged in
