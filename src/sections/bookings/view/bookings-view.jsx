@@ -209,19 +209,23 @@ export default function BookingsView() {
         />
       </Card>
 
-      <AddBookingModal
-        open={isAddBookingModalOpen}
-        onClose={() => setIsAddBookingModalOpen(false)}
-      />
-      <DeleteModal
-        dataRef={Queries.deleteBookingQuery(deleteBookingId)}
-        notificationMessage={{
-          success: 'Booking deleted successfully!',
-          error: 'Error deleting booking. Please try again later.',
-        }}
-        open={!!deleteBookingId}
-        onClose={() => setDeleteBookingId()}
-      />
+      {isAddBookingModalOpen && (
+        <AddBookingModal
+          open={isAddBookingModalOpen}
+          onClose={() => setIsAddBookingModalOpen(false)}
+        />
+      )}
+      {!!deleteBookingId && (
+        <DeleteModal
+          dataRef={Queries.deleteBookingQuery(deleteBookingId)}
+          notificationMessage={{
+            success: 'Booking deleted successfully!',
+            error: 'Error deleting booking. Please try again later.',
+          }}
+          open={!!deleteBookingId}
+          onClose={() => setDeleteBookingId()}
+        />
+      )}
     </Container>
   );
 }

@@ -10,6 +10,8 @@ import ThemeProvider from 'src/theme';
 import { useEffect } from 'react';
 import { logEvent } from 'firebase/analytics';
 import { analytics } from './config/firebaseConfig';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorPage from './pages/error-page';
 
 // ----------------------------------------------------------------------
 
@@ -21,7 +23,9 @@ export default function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <ThemeProvider>
-        <Router />
+        <ErrorBoundary fallback={<ErrorPage />}>
+          <Router />
+        </ErrorBoundary>
       </ThemeProvider>
     </LocalizationProvider>
   );

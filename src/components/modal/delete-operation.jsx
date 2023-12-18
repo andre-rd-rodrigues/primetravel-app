@@ -1,13 +1,12 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { remove } from 'firebase/database';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
-import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
+import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
+import ToastNotification from '../toast/toast';
 
 const DeleteModal = ({ open, onClose, dataRef, notificationMessage }) => {
   const [loading, setLoading] = useState(false);
@@ -88,20 +87,12 @@ const DeleteModal = ({ open, onClose, dataRef, notificationMessage }) => {
           </Box>
         </Box>
       </Modal>
-      <Snackbar
-        open={notification.open}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        autoHideDuration={4000}
+
+      <ToastNotification
         onClose={handleNotificationClose}
-      >
-        <Alert
-          onClose={handleNotificationClose}
-          severity={notification.type}
-          sx={{ width: '100%' }}
-        >
-          {notification.message}
-        </Alert>
-      </Snackbar>
+        severity={notification.type}
+        message={notification.message}
+      />
     </>
   );
 };

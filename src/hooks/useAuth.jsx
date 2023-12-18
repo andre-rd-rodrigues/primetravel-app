@@ -15,18 +15,17 @@ function useAuth() {
   const signIn = async ({ email, password }) => {
     setLoading(true);
 
-    return signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        setUser(userCredential.user);
-        setLoading(false);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        setLoading(false);
-
-        return console.log(errorCode, errorMessage);
-      });
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setUser(userCredential.user);
+      setLoading(false);
+      return userCredential;
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      setLoading(false);
+      throw new Error(`${errorCode}: ${errorMessage}`);
+    }
   };
 
   // Function to log out the current user
