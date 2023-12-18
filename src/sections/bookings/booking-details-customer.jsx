@@ -8,6 +8,7 @@ import { getStatusColor } from 'src/utils/layout.utils';
 import Label from 'src/components/label';
 
 function BookingDetailsCustomer({ customer, booking }) {
+  console.log(booking);
   return (
     <Card
       component={Stack}
@@ -75,7 +76,7 @@ BookingDetailsCustomer.propTypes = {
     }),
   }),
   booking: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.string,
     status: PropTypes.string.isRequired,
   }),
 };

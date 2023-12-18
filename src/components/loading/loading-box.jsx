@@ -14,7 +14,7 @@ function LoadingBox({ loading, sx = { width: 1, height: 200 } }) {
 export default LoadingBox;
 
 LoadingBox.propTypes = {
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   sx: PropTypes.shape({
     width: PropTypes.number,
     height: PropTypes.number,

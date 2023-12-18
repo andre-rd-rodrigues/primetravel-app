@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref, query, equalTo, orderByChild } from 'firebase/database';
@@ -23,14 +23,16 @@ function BookingDetailsPage() {
   const { id } = useParams();
 
   const bookingQuery = query(ref(db, ROUTES.BOOKINGS), orderByChild('id'), equalTo(id));
-  const [booking, loading, error] = useListVals(bookingQuery)[0];
+  const [bookingArray, loading, error] = useListVals(bookingQuery);
+
+  const booking = bookingArray?.[0] ?? undefined;
 
   return (
     <Container>
       {/* Loading spinner  */}
       <LoadingBox loading={loading} />
 
-      {!loading && !!booking && (
+      {!loading && Boolean(booking) && (
         <Grid container spacing={3}>
           <Grid item xs={12} sm={4} md={4}>
             <BookingDetailsCustomer customer={booking?.customer} booking={booking} />
