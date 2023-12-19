@@ -1,8 +1,8 @@
 import moment from 'moment';
 import { useState } from 'react';
+import { query } from 'firebase/database';
 import { useParams } from 'react-router-dom';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref, query, equalTo, orderByChild } from 'firebase/database';
+import { useObjectVal } from 'react-firebase-hooks/database';
 
 import Grid from '@mui/material/Unstable_Grid2';
 import {
@@ -15,9 +15,7 @@ import {
   TablePagination,
 } from '@mui/material';
 
-import { ROUTES } from 'src/routes/routes.constants';
-
-import { db } from 'src/config/firebaseConfig';
+import { Queries } from 'src/api';
 
 import Scrollbar from 'src/components/scrollbar';
 import LoadingBox from 'src/components/loading/loading-box';
@@ -39,8 +37,8 @@ function CustomerDetailsPage() {
 
   const { id } = useParams();
 
-  const customerQuery = query(ref(db, ROUTES.CUSTOMERS), orderByChild('id'), equalTo(id));
-  const [customer, loading, error] = useListVals(customerQuery)[0];
+  const customerQuery = query(Queries.getCustomerQuery(id));
+  const [customer, loading, error] = useObjectVal(customerQuery);
 
   const handleSort = (event, rowId) => {
     const isAsc = orderBy === rowId && order === 'asc';

@@ -9,8 +9,8 @@ import Router from 'src/routes/sections';
 import ThemeProvider from 'src/theme';
 import { useEffect } from 'react';
 import { logEvent } from 'firebase/analytics';
-import { analytics } from './config/firebaseConfig';
 import { ErrorBoundary } from 'react-error-boundary';
+import { analytics } from './config/firebaseConfig';
 import ErrorPage from './pages/error-page';
 
 // ----------------------------------------------------------------------

@@ -19,6 +19,7 @@ import { users } from 'src/_mock/user';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import NoData from 'src/components/noData/noData';
+import ToastNotification from 'src/components/toast/toast';
 import TableNoData from 'src/components/table/table-no-data';
 import DeleteModal from 'src/components/modal/delete-operation';
 import TableEmptyRows from 'src/components/table/table-empty-rows';
@@ -37,6 +38,12 @@ export default function CustomersView() {
 
   // Firebase Realtime DB does not provide a way to effectively order data
   const customers = data?.sort((a, b) => b.created_at.localeCompare(a.created_at));
+
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    type: 'success',
+  });
 
   const [page, setPage] = useState(0);
 
@@ -102,6 +109,10 @@ export default function CustomersView() {
     setSearchValue(event.target.value);
   };
 
+  const handleNotificationClose = () => {
+    setNotification({ ...notification, open: false });
+  };
+
   const dataFiltered = applyFilter({
     inputData: customers,
     comparator: getComparator(order, orderBy),
@@ -113,113 +124,118 @@ export default function CustomersView() {
   const maxRows = page * rowsPerPage + rowsPerPage;
 
   return (
-    <Container>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Customers</Typography>
+    <>
+      <Container>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4">Customers</Typography>
 
-        <Button
-          variant="contained"
-          onClick={() => setIsCustomerModalOpen(true)}
-          color="inherit"
-          startIcon={<Iconify icon="eva:plus-fill" />}
-        >
-          New customer
-        </Button>
-      </Stack>
+          <Button
+            variant="contained"
+            onClick={() => setIsCustomerModalOpen(true)}
+            color="inherit"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
+            New customer
+          </Button>
+        </Stack>
 
-      <Card>
-        <CustomersTableToolbar
-          numSelected={selected.length}
-          searchValue={searchValue}
-          onSearch={handleSearch}
-        />
+        <Card>
+          <CustomersTableToolbar
+            numSelected={selected.length}
+            searchValue={searchValue}
+            onSearch={handleSearch}
+          />
 
-        <Scrollbar>
-          {/* Loading spinner  */}
-          {loading && (
-            <Box
-              sx={{ width: 1, height: 200 }}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <CircularProgress />
-            </Box>
-          )}
+          <Scrollbar>
+            {/* Loading spinner  */}
+            {loading && (
+              <Box
+                sx={{ width: 1, height: 200 }}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <CircularProgress />
+              </Box>
+            )}
 
-          {/* Error message  */}
-          {error && <NoData displayName="customer list" />}
+            {/* Error message  */}
+            {error && <NoData displayName="customer list" />}
 
-          {/* Successfull render  */}
-          {!loading && !error && (
-            <TableContainer sx={{ overflow: 'unset' }}>
-              <Table sx={{ minWidth: 800 }}>
-                <CustomersTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  rowCount={customers?.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleSort}
-                  onSelectAllClick={handleSelectAllClick}
-                  headLabel={[
-                    { id: 'firstName', label: 'Name' },
-                    { id: 'Sex', label: 'Sex' },
-                    { id: 'email', label: 'Email' },
-                    { id: 'phone', label: 'Phone' },
-                    { id: 'customerStatus', label: 'Status' },
-                    { id: '' },
-                  ]}
-                />
-                <TableBody>
-                  {dataFiltered.slice(minRows, maxRows).map((row) => (
-                    <CustomersTableRow
-                      key={row.id}
-                      customer={row}
-                      selected={selected.includes(row.id)}
-                      onCheck={(event) => handleCheck(event, row.id)}
-                      onDelete={() => setDeleteCustomerId(row.id)}
-                      onEditRow={(customer) => setEditCustomer(customer)}
-                    />
-                  ))}
-
-                  <TableEmptyRows
-                    height={77}
-                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+            {/* Successfull render  */}
+            {!loading && !error && (
+              <TableContainer sx={{ overflow: 'unset' }}>
+                <Table sx={{ minWidth: 800 }}>
+                  <CustomersTableHead
+                    order={order}
+                    orderBy={orderBy}
+                    rowCount={customers?.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleSort}
+                    onSelectAllClick={handleSelectAllClick}
+                    headLabel={[
+                      { id: 'firstName', label: 'Name' },
+                      { id: 'Sex', label: 'Sex' },
+                      { id: 'email', label: 'Email' },
+                      { id: 'phone', label: 'Phone' },
+                      { id: 'customerStatus', label: 'Status' },
+                      { id: '' },
+                    ]}
                   />
+                  <TableBody>
+                    {dataFiltered.slice(minRows, maxRows).map((row) => (
+                      <CustomersTableRow
+                        key={row.id}
+                        customer={row}
+                        selected={selected.includes(row.id)}
+                        onCheck={(event) => handleCheck(event, row.id)}
+                        onDelete={() => setDeleteCustomerId(row.id)}
+                        onEditRow={(customer) => setEditCustomer(customer)}
+                      />
+                    ))}
 
-                  {notFound && <TableNoData query={searchValue.trim()} />}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-        </Scrollbar>
+                    <TableEmptyRows
+                      height={77}
+                      emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                    />
 
-        <TablePagination
-          page={page}
-          component="div"
-          count={users.length}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10, 25]}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+                    {notFound && <TableNoData query={searchValue.trim()} />}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </Scrollbar>
+
+          <TablePagination
+            page={page}
+            component="div"
+            count={users.length}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handleChangePage}
+            rowsPerPageOptions={[5, 10, 25]}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Card>
+
+        <CustomerModal
+          open={isCustomerModalOpen || !!editCustomer}
+          onClose={handleCloseModal}
+          customer={editCustomer}
         />
-      </Card>
 
-      <CustomerModal
-        open={isCustomerModalOpen || !!editCustomer}
-        onClose={handleCloseModal}
-        customer={editCustomer}
+        <DeleteModal
+          dataRef={Queries.deleteCustomerQuery(deleteCustomerId)}
+          onNotification={(notificationProps) => setNotification(notificationProps)}
+          open={!!deleteCustomerId}
+          onClose={() => setDeleteCustomerId()}
+        />
+      </Container>
+      <ToastNotification
+        open={notification.open}
+        onClose={handleNotificationClose}
+        severity={notification.type}
+        message={notification.message}
       />
-
-      <DeleteModal
-        dataRef={Queries.deleteCustomerQuery(deleteCustomerId)}
-        notificationMessage={{
-          success: 'Customer deleted successfully!',
-          error: 'Error deleting customer. Please try again later.',
-        }}
-        open={!!deleteCustomerId}
-        onClose={() => setDeleteCustomerId()}
-      />
-    </Container>
+    </>
   );
 }

@@ -1,16 +1,13 @@
-import React, { useEffect } from 'react';
+import { query } from 'firebase/database';
 import { useParams } from 'react-router-dom';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref, query, equalTo, orderByChild } from 'firebase/database';
+import { useObjectVal } from 'react-firebase-hooks/database';
 
 import { Container } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 
-import { ROUTES } from 'src/routes/routes.constants';
-
 import { convertPackagesToDisplayFields } from 'src/utils/layout.utils';
 
-import { db } from 'src/config/firebaseConfig';
+import { Queries } from 'src/api';
 
 import LoadingBox from 'src/components/loading/loading-box';
 
@@ -22,10 +19,8 @@ import BookingDetailsCustomer from '../booking-details-customer';
 function BookingDetailsPage() {
   const { id } = useParams();
 
-  const bookingQuery = query(ref(db, ROUTES.BOOKINGS), orderByChild('id'), equalTo(id));
-  const [bookingArray, loading, error] = useListVals(bookingQuery);
-
-  const booking = bookingArray?.[0] ?? undefined;
+  const bookingQuery = query(Queries.getBookingQuery(id));
+  const [booking, loading, error] = useObjectVal(bookingQuery);
 
   return (
     <Container>

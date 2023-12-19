@@ -7,8 +7,9 @@ import { db } from 'src/config/firebaseConfig';
 export const Queries = {
   getPackagesQuery: () => ref(db, ROUTES.PACKAGES),
   getCustomersQuery: () => [ref(db, ROUTES.CUSTOMERS), orderByChild('created_at')],
-  deleteCustomerQuery: (id) => ref(db, `customers/${id}`),
+  getCustomerQuery: (id) => ref(db, `${ROUTES.CUSTOMERS}/${id}`),
+  deleteCustomerQuery: (id) => ref(db, `${ROUTES.CUSTOMERS}/${id}`),
   getBookingsQuery: () => [ref(db, ROUTES.BOOKINGS), orderByChild('created_at')],
-  deleteBookingQuery: (id) => ref(db, `bookings/${id}`),
-  getSingleBookingQuery: () => ref(db, ROUTES.BOOKINGS),
+  getBookingQuery: (id) => ref(db, `${ROUTES.BOOKINGS}/${id}`),
+  deleteBookingQuery: (id) => ref(db, `${ROUTES.BOOKINGS}/${id}`),
 };
