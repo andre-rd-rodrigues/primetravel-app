@@ -38,17 +38,15 @@ export const addNewBooking = ({ data, notification, onSuccess, onError }) => {
   update(ref(db), updates)
     .then(() => {
       notification({
-        open: true,
         message: 'New booking created successfully!',
-        severity: 'success',
+        type: 'success',
       });
       onSuccess();
     })
     .catch(() => {
       notification({
-        open: true,
         message: 'Something went wrong. Please try again later.',
-        severity: 'error',
+        type: 'error',
       });
       onError();
     });

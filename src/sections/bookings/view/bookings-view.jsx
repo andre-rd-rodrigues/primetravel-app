@@ -199,14 +199,13 @@ export default function BookingsView() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
-      {isBookingModalOpen ||
-        (!!editBooking && (
-          <BookingModal
-            open={isBookingModalOpen || !!editBooking}
-            onClose={handleCloseModal}
-            booking={editBooking}
-          />
-        ))}
+      {(isBookingModalOpen || !!editBooking) && (
+        <BookingModal
+          open={isBookingModalOpen || !!editBooking}
+          onClose={handleCloseModal}
+          booking={editBooking}
+        />
+      )}
       {!!deleteBookingId && (
         <DeleteModal
           dataRef={Queries.deleteBookingQuery(deleteBookingId)}
