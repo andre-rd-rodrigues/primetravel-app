@@ -22,7 +22,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function CustomerTableRow({ customer, selected, onCheck, onDelete, onEditRow }) {
+export default function CustomerTableRow({ customer, selected, onCheck, onDelete, onEdit }) {
   const [open, setOpen] = useState(null);
   const router = useRouter();
 
@@ -44,8 +44,8 @@ export default function CustomerTableRow({ customer, selected, onCheck, onDelete
     handleCloseMenu();
   };
 
-  const handleEditRow = () => {
-    onEditRow(customer);
+  const handleEdit = () => {
+    onEdit(customer);
     handleCloseMenu();
   };
 
@@ -97,7 +97,7 @@ export default function CustomerTableRow({ customer, selected, onCheck, onDelete
           View
         </MenuItem>
 
-        <MenuItem onClick={handleEditRow}>
+        <MenuItem onClick={handleEdit}>
           <Iconify icon="iconamoon:edit" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
@@ -128,5 +128,5 @@ CustomerTableRow.propTypes = {
   }).isRequired,
   onCheck: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onEditRow: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };

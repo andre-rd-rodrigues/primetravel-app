@@ -10,6 +10,7 @@ const ToastNotification = ({ open, onClose, message, type }) => (
     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     autoHideDuration={4000}
     onClose={onClose}
+    sx={{ position: 'absolute' }}
   >
     <Alert onClose={onClose} severity={type} sx={{ width: '100%' }}>
       {message}

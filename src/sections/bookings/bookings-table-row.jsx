@@ -21,18 +21,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function BookingsTableRow({
-  selected,
-  bookingID,
-  customer,
-  airline,
-  destination,
-  travelDate,
-  amount,
-  status,
-  handleClick,
-  onDelete,
-}) {
+export default function BookingsTableRow({ selected, booking, handleClick, onDelete, onEdit }) {
   const [open, setOpen] = useState(null);
   const router = useRouter();
 
@@ -45,12 +34,17 @@ export default function BookingsTableRow({
   };
 
   const handleViewBookingDetails = () => {
-    router.push(`/bookings/${bookingID}`);
+    router.push(`/bookings/${booking?.id}`);
     setOpen(null);
   };
 
   const handleDelete = () => {
     onDelete();
+    handleCloseMenu();
+  };
+
+  const handleEdit = () => {
+    onEdit(booking);
     handleCloseMenu();
   };
 
@@ -61,29 +55,29 @@ export default function BookingsTableRow({
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
 
-        <TableCell>{bookingID}</TableCell>
+        <TableCell>{booking?.id}</TableCell>
 
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={customer?.first_name} src={customer?.avatar?.url} />
+            <Avatar alt={booking?.customer?.first_name} src={booking?.customer?.avatar?.url} />
             <Typography variant="subtitle2" noWrap>
-              {customer?.first_name}
+              {booking?.customer?.first_name}
             </Typography>
           </Stack>
         </TableCell>
 
-        <TableCell>{`${moment(travelDate?.starting_date).format('DD-MM-YYYY')} | ${moment(
-          travelDate?.end_date
-        ).format('DD-MM-YYYY')}`}</TableCell>
+        <TableCell>{`${moment(booking?.travel_info?.dates?.starting_date).format(
+          'DD-MM-YYYY'
+        )} | ${moment(booking?.travel_info?.dates?.end_date).format('DD-MM-YYYY')}`}</TableCell>
 
-        <TableCell>{airline}</TableCell>
+        <TableCell>{booking?.travel_info?.airline?.flight_company?.name}</TableCell>
 
-        <TableCell>{destination}</TableCell>
+        <TableCell>{booking?.destination.location.city}</TableCell>
 
-        <TableCell>{amount}€</TableCell>
+        <TableCell>{booking?.payment_info.total_amount}€</TableCell>
 
         <TableCell>
-          <Label color={getStatusColor(status)}>{status}</Label>
+          <Label color={getStatusColor(booking?.status)}>{booking?.status}</Label>
         </TableCell>
 
         <TableCell align="right">
@@ -108,7 +102,7 @@ export default function BookingsTableRow({
           View
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={handleEdit}>
           <Iconify icon="iconamoon:edit" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
@@ -124,21 +118,8 @@ export default function BookingsTableRow({
 
 BookingsTableRow.propTypes = {
   selected: PropTypes.bool.isRequired,
-  bookingID: PropTypes.string.isRequired,
-  customer: PropTypes.shape({
-    first_name: PropTypes.string.isRequired,
-    avatar: PropTypes.shape({
-      url: PropTypes.string,
-    }),
-  }).isRequired,
-  airline: PropTypes.string.isRequired,
-  destination: PropTypes.string.isRequired,
-  travelDate: PropTypes.shape({
-    starting_date: PropTypes.string.isRequired,
-    end_date: PropTypes.string.isRequired,
-  }).isRequired,
-  amount: PropTypes.number.isRequired,
-  status: PropTypes.string.isRequired,
+  booking: PropTypes.object,
   handleClick: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };

@@ -12,6 +12,7 @@ import { logEvent } from 'firebase/analytics';
 import { ErrorBoundary } from 'react-error-boundary';
 import { analytics } from './config/firebaseConfig';
 import ErrorPage from './pages/error-page';
+import { NotificationProvider } from './contexts/NotificationContext';
 
 // ----------------------------------------------------------------------
 
@@ -24,7 +25,9 @@ export default function App() {
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <ThemeProvider>
         <ErrorBoundary fallback={<ErrorPage />}>
-          <Router />
+          <NotificationProvider>
+            <Router />
+          </NotificationProvider>
         </ErrorBoundary>
       </ThemeProvider>
     </LocalizationProvider>

@@ -6,18 +6,18 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { useNotification } from 'src/contexts/NotificationContext';
 
-
-const DeleteModal = ({ open, onClose, dataRef, onNotification }) => {
+const DeleteModal = ({ open, onClose, dataRef }) => {
   const [loading, setLoading] = useState(false);
+  const notify = useNotification();
 
   const handleDelete = () => {
     setLoading(true);
 
     remove(dataRef)
       .then(() => {
-        onNotification({
-          open: true,
+        notify({
           message: 'Booking deleted successfully!',
           type: 'success',
         });
@@ -26,8 +26,7 @@ const DeleteModal = ({ open, onClose, dataRef, onNotification }) => {
         onClose();
       })
       .catch((error) => {
-        onNotification({
-          open: true,
+        notify({
           message: 'Error deleting booking. Please try again later.',
           type: 'error',
         });

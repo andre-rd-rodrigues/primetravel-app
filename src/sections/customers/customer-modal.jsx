@@ -11,16 +11,12 @@ import ToastNotification from 'src/components/toast/toast';
 
 import AvatarLoader from './avatar-loader';
 import { addNewCustomer, updateExistingCustomer } from './customers.api';
+import { useNotification } from 'src/contexts/NotificationContext';
 
 function CustomerModal({ open, onClose, customer }) {
   const [formInitFields, setFormInitFields] = useState({});
   const [loading, setLoading] = useState(false);
-
-  const [notification, setNotification] = useState({
-    open: false,
-    message: '',
-    type: 'success',
-  });
+  const notify = useNotification();
 
   const validationRules = {
     firstName: [{ test: (value) => !!value, message: 'First name is required' }],
@@ -53,7 +49,7 @@ function CustomerModal({ open, onClose, customer }) {
       // Common request object
       const requestObject = {
         data,
-        notification: (messageObj) => setNotification(messageObj),
+        notification: (messageObj) => notify(messageObj),
         onSuccess: () => {
           setLoading(false);
           handleClose();
@@ -111,138 +107,124 @@ function CustomerModal({ open, onClose, customer }) {
   }, [customer]);
 
   return (
-    <>
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          onSubmit={handleSubmit}
-          component="form"
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 600,
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography variant="h4" marginBottom={3} textAlign="center">
-            New Customer
-          </Typography>
-          <Grid container spacing={2}>
-            <AvatarLoader
-              loading={loading}
-              avatar={data.imageUrl}
-              onSelectImage={(selectedImage) =>
-                handleInputChange({
-                  target: {
-                    value: selectedImage,
-                    name: 'imageUpload',
-                  },
-                })
-              }
-            />
-            <Grid item xs={6}>
-              <TextField
-                disabled={loading}
-                label="First Name"
-                name="firstName"
-                value={data.firstName}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-                error={!!errors.firstName}
-                helperText={errors.firstName}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                disabled={loading}
-                label="Last Name"
-                name="lastName"
-                value={data.lastName}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-                error={!!errors.lastName}
-                helperText={errors.lastName}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                disabled={loading}
-                label="Phone Number"
-                name="phoneNumber"
-                value={data.phoneNumber}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-                error={!!errors.phoneNumber}
-                helperText={errors.phoneNumber || 'e.g. 123-456-7890'}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                disabled={loading}
-                label="Email"
-                name="email"
-                value={data.email}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-                error={!!errors.email}
-                helperText={errors.email}
-              />
-            </Grid>
-          </Grid>
-          <TextField
-            disabled={loading}
-            label="Address"
-            name="address"
-            value={data.address}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={!!errors.address}
-            helperText={errors.address}
+    <Modal open={open} onClose={handleClose}>
+      <Box
+        onSubmit={handleSubmit}
+        component="form"
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 600,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+        }}
+      >
+        <Typography variant="h4" marginBottom={3} textAlign="center">
+          {customer ? 'Update Customer' : 'New Customer'}
+        </Typography>
+        <Grid container spacing={2}>
+          <AvatarLoader
+            loading={loading}
+            avatar={data.imageUrl}
+            onSelectImage={(selectedImage) =>
+              handleInputChange({
+                target: {
+                  value: selectedImage,
+                  name: 'imageUpload',
+                },
+              })
+            }
           />
-          <TextField
-            disabled={loading}
-            label="IBAN"
-            name="iban"
-            value={data.iban}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={!!errors.iban}
-            helperText={errors.iban}
-          />
-          <Stack direction="row" gap={2} marginTop={3} justifyContent="flex-end">
-            <Button disabled={loading} sx={{ color: 'text.secondary' }} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button
+          <Grid item xs={6}>
+            <TextField
               disabled={loading}
-              variant="contained"
-              color="success"
-              type="submit"
-              onClick={handleSubmit}
-            >
-              {customer ? 'Update' : 'Save'}
-            </Button>
-          </Stack>
-        </Box>
-      </Modal>
-      <ToastNotification
-        open={notification.open}
-        onClose={() => setNotification({ ...notification, open: false })}
-        message={notification.message}
-        type={notification.type}
-      />
-    </>
+              label="First Name"
+              name="firstName"
+              value={data.firstName}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={!!errors.firstName}
+              helperText={errors.firstName}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              disabled={loading}
+              label="Last Name"
+              name="lastName"
+              value={data.lastName}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={!!errors.lastName}
+              helperText={errors.lastName}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <TextField
+              disabled={loading}
+              label="Phone Number"
+              name="phoneNumber"
+              value={data.phoneNumber}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={!!errors.phoneNumber}
+              helperText={errors.phoneNumber || 'e.g. 123-456-7890'}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              disabled={loading}
+              label="Email"
+              name="email"
+              value={data.email}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={!!errors.email}
+              helperText={errors.email}
+            />
+          </Grid>
+        </Grid>
+        <TextField
+          disabled={loading}
+          label="Address"
+          name="address"
+          value={data.address}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+          error={!!errors.address}
+          helperText={errors.address}
+        />
+        <TextField
+          disabled={loading}
+          label="IBAN"
+          name="iban"
+          value={data.iban}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+          error={!!errors.iban}
+          helperText={errors.iban}
+        />
+        <Stack direction="row" gap={2} marginTop={3} justifyContent="flex-end">
+          <Button disabled={loading} sx={{ color: 'text.secondary' }} onClick={onClose}>
+            Cancel
+          </Button>
+          <Button disabled={loading} variant="contained" color="success" type="submit">
+            {customer ? 'Update' : 'Save'}
+          </Button>
+        </Stack>
+      </Box>
+    </Modal>
   );
 }
 

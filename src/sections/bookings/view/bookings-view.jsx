@@ -19,10 +19,9 @@ import { users } from 'src/_mock/user';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import NoData from 'src/components/noData/noData';
-import ToastNotification from 'src/components/toast/toast';
 import DeleteModal from 'src/components/modal/delete-operation';
 
-import AddBookingModal from '../add-booking-modal';
+import BookingModal from '../booking-modal';
 import BookingsTableRow from '../bookings-table-row';
 import BookingsTableHead from '../bookings-table-head';
 import BookingsTableToolbar from '../bookings-table-toolbar';
@@ -41,12 +40,6 @@ export default function BookingsView() {
 
   const [page, setPage] = useState(0);
 
-  const [notification, setNotification] = useState({
-    open: false,
-    message: '',
-    type: 'success',
-  });
-
   const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
@@ -57,9 +50,11 @@ export default function BookingsView() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [isAddBookingModalOpen, setIsAddBookingModalOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const [deleteBookingId, setDeleteBookingId] = useState();
+
+  const [editBooking, setEditBooking] = useState();
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -106,9 +101,7 @@ export default function BookingsView() {
     setSearchValue(event.target.value);
   };
 
-  const handleNotificationClose = () => {
-    setNotification({ ...notification, open: false });
-  };
+  const handleCloseModal = () => (editBooking ? setEditBooking() : setIsBookingModalOpen(false));
 
   const dataFiltered = applyFilter({
     inputData: bookings,
@@ -121,118 +114,106 @@ export default function BookingsView() {
   const maxRows = page * rowsPerPage + rowsPerPage;
 
   return (
-    <>
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4">Bookings</Typography>
-          <Button
-            variant="contained"
-            color="inherit"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={() => setIsAddBookingModalOpen(true)}
-          >
-            New booking
-          </Button>
-        </Stack>
-        <Card>
-          <BookingsTableToolbar
-            numSelected={selected.length}
-            filterValue={searchValue}
-            onFilterBooking={handleSearch}
-          />
-          <Scrollbar>
-            {/* Loading spinner  */}
-            {loading && (
-              <Box
-                sx={{ width: 1, height: 200 }}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <CircularProgress />
-              </Box>
-            )}
-            {/* Error message  */}
-            {error && <NoData displayName="bookings list" />}
-            {/* Successfull render  */}
-            {!loading && !error && (
-              <TableContainer sx={{ overflow: 'unset' }}>
-                <Table sx={{ minWidth: 800 }}>
-                  <BookingsTableHead
-                    order={order}
-                    orderBy={orderBy}
-                    rowCount={bookings?.length}
-                    numSelected={selected.length}
-                    onRequestSort={handleSort}
-                    onSelectAllClick={handleSelectAllClick}
-                    headLabel={[
-                      { id: 'bookingId', label: 'Booking ID' },
-                      { id: 'customer', label: 'Customer' },
-                      { id: 'travelDate', label: 'Travel date' },
-                      { id: 'airline', label: 'Airline' },
-                      { id: 'destination', label: 'Destination' },
-                      { id: 'amount', label: 'Amount' },
-                      { id: 'status', label: 'Status' },
-                      { id: '' },
-                    ]}
-                  />
-                  <TableBody>
-                    {dataFiltered.slice(minRows, maxRows).map((row) => (
-                      <BookingsTableRow
-                        key={row.id}
-                        bookingID={row.id}
-                        customer={row?.customer}
-                        status={row.status}
-                        amount={row?.payment_info?.total_amount}
-                        destination={row?.destination?.location?.country}
-                        airline={row?.travel_info?.airline?.flight_company?.iataCode}
-                        travelDate={row?.travel_info?.dates}
-                        selected={selected.includes(row.bookingNumber)}
-                        handleClick={(event) => handleClick(event, row.bookingNumber)}
-                        onDelete={() => setDeleteBookingId(row.id)}
-                      />
-                    ))}
-                    <TableEmptyRows
-                      height={77}
-                      emptyRows={emptyRows(page, rowsPerPage, bookings.length)}
+    <Container>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Typography variant="h4">Bookings</Typography>
+        <Button
+          variant="contained"
+          color="inherit"
+          startIcon={<Iconify icon="eva:plus-fill" />}
+          onClick={() => setIsBookingModalOpen(true)}
+        >
+          New booking
+        </Button>
+      </Stack>
+      <Card>
+        <BookingsTableToolbar
+          numSelected={selected.length}
+          filterValue={searchValue}
+          onFilterBooking={handleSearch}
+        />
+        <Scrollbar>
+          {/* Loading spinner  */}
+          {loading && (
+            <Box
+              sx={{ width: 1, height: 200 }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <CircularProgress />
+            </Box>
+          )}
+          {/* Error message  */}
+          {error && <NoData displayName="bookings list" />}
+          {/* Successfull render  */}
+          {!loading && !error && (
+            <TableContainer sx={{ overflow: 'unset' }}>
+              <Table sx={{ minWidth: 800 }}>
+                <BookingsTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  rowCount={bookings?.length}
+                  numSelected={selected.length}
+                  onRequestSort={handleSort}
+                  onSelectAllClick={handleSelectAllClick}
+                  headLabel={[
+                    { id: 'bookingId', label: 'Booking ID' },
+                    { id: 'customer', label: 'Customer' },
+                    { id: 'travelDate', label: 'Travel date' },
+                    { id: 'airline', label: 'Airline' },
+                    { id: 'destination', label: 'Destination' },
+                    { id: 'amount', label: 'Amount' },
+                    { id: 'status', label: 'Status' },
+                    { id: '' },
+                  ]}
+                />
+                <TableBody>
+                  {dataFiltered.slice(minRows, maxRows).map((row) => (
+                    <BookingsTableRow
+                      key={row.id}
+                      booking={row}
+                      selected={selected.includes(row.bookingNumber)}
+                      handleClick={(event) => handleClick(event, row.bookingNumber)}
+                      onDelete={() => setDeleteBookingId(row.id)}
+                      onEdit={(booking) => setEditBooking(booking)}
                     />
-                    {notFound && <TableNoData query={searchValue.trim()} />}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          </Scrollbar>
-          <TablePagination
-            page={page}
-            component="div"
-            count={users.length}
-            rowsPerPage={rowsPerPage}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
+                  ))}
+                  <TableEmptyRows
+                    height={77}
+                    emptyRows={emptyRows(page, rowsPerPage, bookings.length)}
+                  />
+                  {notFound && <TableNoData query={searchValue.trim()} />}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Scrollbar>
+        <TablePagination
+          page={page}
+          component="div"
+          count={users.length}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+          rowsPerPageOptions={[5, 10, 25]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Card>
+      {isBookingModalOpen ||
+        (!!editBooking && (
+          <BookingModal
+            open={isBookingModalOpen || !!editBooking}
+            onClose={handleCloseModal}
+            booking={editBooking}
           />
-        </Card>
-        {isAddBookingModalOpen && (
-          <AddBookingModal
-            open={isAddBookingModalOpen}
-            onClose={() => setIsAddBookingModalOpen(false)}
-          />
-        )}
-        {!!deleteBookingId && (
-          <DeleteModal
-            dataRef={Queries.deleteBookingQuery(deleteBookingId)}
-            open={Boolean(deleteBookingId)}
-            onClose={() => setDeleteBookingId()}
-            onNotification={(notificationProps) => setNotification(notificationProps)}
-          />
-        )}
-      </Container>
-      <ToastNotification
-        open={notification.open}
-        onClose={handleNotificationClose}
-        severity={notification.type}
-        message={notification.message}
-      />
-    </>
+        ))}
+      {!!deleteBookingId && (
+        <DeleteModal
+          dataRef={Queries.deleteBookingQuery(deleteBookingId)}
+          open={Boolean(deleteBookingId)}
+          onClose={() => setDeleteBookingId()}
+        />
+      )}
+    </Container>
   );
 }

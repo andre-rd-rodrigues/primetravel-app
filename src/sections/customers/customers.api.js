@@ -34,9 +34,8 @@ export const addNewCustomer = ({ data, notification, onSuccess, onError }) => {
       (error) => {
         console.log(error);
         notification({
-          open: true,
           message: 'Something went wrong while uploading the image. Please try again later.',
-          severity: 'error',
+          type: 'error',
         });
       },
       () => {
@@ -50,18 +49,16 @@ export const addNewCustomer = ({ data, notification, onSuccess, onError }) => {
           update(dbRef(db), updates)
             .then(() => {
               notification({
-                open: true,
                 message: 'New customer created successfully!',
-                severity: 'success',
+                type: 'success',
               });
               onSuccess();
             })
             .catch(() => {
               onError();
               notification({
-                open: true,
                 message: 'Something went wrong. Please try again later.',
-                severity: 'error',
+                type: 'error',
               });
             });
         });
@@ -72,18 +69,16 @@ export const addNewCustomer = ({ data, notification, onSuccess, onError }) => {
     update(dbRef(db), updates)
       .then(() => {
         notification({
-          open: true,
           message: 'New customer created successfully!',
-          severity: 'success',
+          type: 'success',
         });
         onSuccess();
       })
       .catch(() => {
         onError();
         notification({
-          open: true,
           message: 'Something went wrong. Please try again later.',
-          severity: 'error',
+          type: 'error',
         });
       });
   }
@@ -118,9 +113,8 @@ export const updateExistingCustomer = ({ data, notification, onSuccess, onError 
       (error) => {
         onError(error);
         notification({
-          open: true,
           message: 'Something went wrong while uploading the image. Please try again later.',
-          severity: 'error',
+          type: 'error',
         });
       },
       () => {
@@ -134,19 +128,17 @@ export const updateExistingCustomer = ({ data, notification, onSuccess, onError 
           update(dbRef(db), updates)
             .then(() => {
               notification({
-                open: true,
                 message: 'Customer updated successfully!',
-                severity: 'success',
+                type: 'success',
               });
               onSuccess();
             })
             .catch((error) => {
               onError(error);
               notification({
-                open: true,
                 message:
                   'Something went wrong while updating the customer. Please try again later.',
-                severity: 'error',
+                type: 'error',
               });
             });
         });
@@ -157,18 +149,16 @@ export const updateExistingCustomer = ({ data, notification, onSuccess, onError 
     update(dbRef(db), updates)
       .then(() => {
         notification({
-          open: true,
           message: 'Customer updated successfully!',
-          severity: 'success',
+          type: 'success',
         });
         onSuccess();
       })
       .catch((error) => {
         onError(error);
         notification({
-          open: true,
           message: 'Something went wrong while updating the customer. Please try again later.',
-          severity: 'error',
+          type: 'error',
         });
       });
   }
