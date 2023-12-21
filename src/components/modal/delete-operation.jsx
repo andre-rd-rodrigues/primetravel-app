@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+
 import { useNotification } from 'src/contexts/NotificationContext';
 
 const DeleteModal = ({ open, onClose, dataRef }) => {
@@ -81,7 +82,6 @@ DeleteModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   dataRef: PropTypes.any,
-  onNotification: PropTypes.func,
 };
 
 export default DeleteModal;

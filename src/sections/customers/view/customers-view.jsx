@@ -214,7 +214,6 @@ export default function CustomersView() {
 
       <DeleteModal
         dataRef={Queries.deleteCustomerQuery(deleteCustomerId)}
-        onNotification={(notificationProps) => setNotification(notificationProps)}
         open={!!deleteCustomerId}
         onClose={() => setDeleteCustomerId()}
       />

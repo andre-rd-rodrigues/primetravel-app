@@ -9,6 +9,7 @@ import Grid from '@mui/material/Grid';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { DatePicker } from '@mui/x-date-pickers';
 import Typography from '@mui/material/Typography';
 
 import { useFormValidation } from 'src/routes/hooks';
@@ -88,8 +89,8 @@ const BookingModal = ({ open, onClose, booking }) => {
         customerPhoneNumber: booking?.customer?.contacts?.phone_number,
         customerEmail: booking?.customer?.contacts?.email,
         customerAddress: booking?.customer?.address?.text,
-        departureDate: booking?.travel_info?.dates?.starting_date,
-        returnDate: booking?.travel_info?.dates?.end_date,
+        departureDate: moment(booking?.travel_info?.dates?.starting_date),
+        returnDate: moment(booking?.travel_info?.dates?.end_date),
         airlineCompanyName: booking?.travel_info?.airline.flight_company?.name,
         flightNumber: booking?.travel_info?.airline.flight_number,
         seat: booking?.travel_info?.airline.flight_seat,
@@ -140,44 +141,44 @@ const BookingModal = ({ open, onClose, booking }) => {
         <Typography variant="subtitle1" marginBottom={3}>
           Destination information
         </Typography>
-        {/*    <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <DatePicker
-                disablePast
-                label="Departure date"
-                name="departureDate"
-                value={data.departureDate}
-                onChange={(momentDateObj) =>
-                  handleInputChange({
-                    target: { name: 'departureDate', value: momentDateObj },
-                  })
-                }
-                sx={{ width: '100%' }}
-                margin="normal"
-                error={!!errors.departureDate}
-                helperText={errors.departureDate}
-                disabled={loading}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <DatePicker
-                disabled={loading}
-                disablePast
-                label="Return date"
-                name="returnDate"
-                value={data.returnDate}
-                onChange={(momentDateObj) =>
-                  handleInputChange({
-                    target: { name: 'returnDate', value: momentDateObj },
-                  })
-                }
-                sx={{ width: '100%' }}
-                margin="normal"
-                error={!!errors.returnDate}
-                helperText={errors.returnDate}
-              />
-            </Grid>
-          </Grid> */}
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <DatePicker
+              disablePast={!booking}
+              label="Departure date"
+              name="departureDate"
+              value={data.departureDate}
+              onChange={(momentDateObj) =>
+                handleInputChange({
+                  target: { name: 'departureDate', value: momentDateObj },
+                })
+              }
+              sx={{ width: '100%' }}
+              margin="normal"
+              error={!!errors.departureDate}
+              helperText={errors.departureDate}
+              disabled={loading}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <DatePicker
+              disabled={loading}
+              disablePast
+              label="Return date"
+              name="returnDate"
+              value={data.returnDate}
+              onChange={(momentDateObj) =>
+                handleInputChange({
+                  target: { name: 'returnDate', value: momentDateObj },
+                })
+              }
+              sx={{ width: '100%' }}
+              margin="normal"
+              error={!!errors.returnDate}
+              helperText={errors.returnDate}
+            />
+          </Grid>
+        </Grid>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <TextField
@@ -243,68 +244,11 @@ const BookingModal = ({ open, onClose, booking }) => {
             />
           </Grid>
         </Grid>
-        {!booking && (
-          <>
-            <Typography variant="subtitle1" gutterBottom marginTop={4}>
-              Customer Information
-            </Typography>
-            <TextField
-              disabled={loading}
-              label="Customer Name"
-              name="customerName"
-              value={data.customerName}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              error={!!errors.customerName}
-              helperText={errors.customerName}
-            />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField
-                  disabled={loading}
-                  label="Phone Number"
-                  name="customerPhoneNumber"
-                  value={data.customerPhoneNumber}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                  error={!!errors.customerPhoneNumber}
-                  helperText={errors.customerPhoneNumber || 'e.g. 123-456-7890'}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  disabled={loading}
-                  label="Email"
-                  name="customerEmail"
-                  value={data.customerEmail}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                  error={!!errors.customerEmail}
-                  helperText={errors.customerEmail}
-                />
-              </Grid>
-            </Grid>
-            <TextField
-              disabled={loading}
-              label="Customer Address"
-              name="customerAddress"
-              value={data.customerAddress}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              error={!!errors.customerAddress}
-              helperText={errors.customerAddress}
-            />
-          </>
-        )}
         <Typography variant="subtitle1" gutterBottom marginTop={4}>
           Airline Information
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               disabled={loading}
               label="Airline Company"
@@ -317,7 +261,7 @@ const BookingModal = ({ open, onClose, booking }) => {
               helperText={errors.airlineCompanyName}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               disabled={loading}
               label="Flight Number"
@@ -330,18 +274,21 @@ const BookingModal = ({ open, onClose, booking }) => {
               helperText={errors.flightNumber}
             />
           </Grid>
+          <Grid item xs={4}>
+            <TextField
+              disabled={loading}
+              label="Seat"
+              name="seat"
+              value={data.seat}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={!!errors.seat}
+              helperText={errors.seat}
+            />
+          </Grid>
         </Grid>
-        <TextField
-          disabled={loading}
-          label="Seat"
-          name="seat"
-          value={data.seat}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          error={!!errors.seat}
-          helperText={errors.seat}
-        />
+
         <Stack direction="row" gap={2} marginTop={3} justifyContent="flex-end">
           <Button sx={{ color: 'text.secondary' }} disabled={loading} onClick={onClose}>
             Cancel

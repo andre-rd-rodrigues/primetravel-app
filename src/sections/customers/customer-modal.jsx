@@ -7,11 +7,10 @@ import { Box, Grid, Modal, Stack, Button, TextField, Typography } from '@mui/mat
 
 import { useFormValidation } from 'src/routes/hooks';
 
-import ToastNotification from 'src/components/toast/toast';
+import { useNotification } from 'src/contexts/NotificationContext';
 
 import AvatarLoader from './avatar-loader';
 import { addNewCustomer, updateExistingCustomer } from './customers.api';
-import { useNotification } from 'src/contexts/NotificationContext';
 
 function CustomerModal({ open, onClose, customer }) {
   const [formInitFields, setFormInitFields] = useState({});
