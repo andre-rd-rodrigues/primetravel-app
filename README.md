@@ -27,6 +27,15 @@ PrimeTravel is a versatile CRUD app developed by André Rodrigues. This applicat
   - SimpleBar-React ^3.2.4
   - Emotion/Styled ^11.11.0
 
+## **Fake Data Generation 📋**
+
+To aid in development and testing, I've implemented a server-json script specifically designed to generate mock data.
+
+- **Server-JSON Script:**
+  - Generate fake bookings, customer details, packages, destinations, and more.
+  - Facilitates comprehensive testing and evaluation of the app's features and functionalities.
+  - Github: https://github.com/andre-rd-rodrigues/primetravel-server
+
 ## **Firebase Integration 🔥**
 
 PrimeTravel leverages Firebase for authentication and real-time database functionalities.
