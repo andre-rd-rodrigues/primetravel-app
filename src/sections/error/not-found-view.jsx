@@ -17,7 +17,7 @@ export default function NotFoundView({
   description = 'Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be sure to check your spelling.',
 }) {
   const router = useRouter();
-
+  console.log(router);
   const renderHeader = (
     <Box
       component="header"
@@ -67,8 +67,8 @@ export default function NotFoundView({
             }}
           />
 
-          <Button size="large" variant="contained" onClick={() => router.back()}>
-            Go back
+          <Button size="large" variant="contained" href="/">
+            Go to dashboard
           </Button>
         </Box>
       </Container>
