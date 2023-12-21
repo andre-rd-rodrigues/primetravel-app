@@ -65,7 +65,7 @@ function CustomerDetailsPage() {
 
   const minRows = page * rowsPerPage;
   const maxRows = page * rowsPerPage + rowsPerPage;
-
+  console.log(customer);
   return (
     <Container>
       {/* Loading customer  */}
@@ -133,7 +133,6 @@ function CustomerDetailsPage() {
                         { id: 'bookingId', label: 'Booking ID' },
                         { id: 'departure', label: 'Departure' },
                         { id: 'returnDate', label: 'Return' },
-                        { id: 'airline', label: 'Airline' },
                         { id: 'destination', label: 'Destination' },
                         { id: 'amount', label: 'Amount' },
                         { id: 'status', label: 'Status' },
@@ -145,10 +144,9 @@ function CustomerDetailsPage() {
                           key={row.id}
                           bookingID={row.id}
                           customer={row?.customer}
-                          amount={row?.total_amount}
+                          amount={row?.payment_info?.total_amount}
                           status={row.status}
                           destination={row?.destination?.location?.country}
-                          airline={row?.travel_info?.airline?.flight_company?.iataCode}
                           departure={moment(row?.travel_info?.dates?.starting_date).format(
                             'DD-MM-YYYY'
                           )}

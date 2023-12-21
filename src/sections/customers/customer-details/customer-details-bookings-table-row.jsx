@@ -12,7 +12,6 @@ import Label from 'src/components/label';
 export default function CustomerDetailsBookingsTableRow({
   selected,
   bookingID,
-  airline,
   destination,
   departure,
   returnDate,
@@ -25,8 +24,6 @@ export default function CustomerDetailsBookingsTableRow({
 
       <TableCell>{departure}</TableCell>
       <TableCell>{returnDate}</TableCell>
-
-      <TableCell>{airline}</TableCell>
 
       <TableCell>{destination}</TableCell>
 
@@ -42,7 +39,6 @@ export default function CustomerDetailsBookingsTableRow({
 CustomerDetailsBookingsTableRow.propTypes = {
   selected: PropTypes.bool.isRequired,
   bookingID: PropTypes.number.isRequired,
-  airline: PropTypes.string.isRequired,
   destination: PropTypes.string.isRequired,
   departure: PropTypes.string.isRequired,
   returnDate: PropTypes.string.isRequired,
