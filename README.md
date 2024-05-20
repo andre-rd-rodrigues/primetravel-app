@@ -2,6 +2,8 @@
 
 PrimeTravel is a versatile CRUD app developed by André Rodrigues. This application provides a robust solution for travel agencies to efficiently manage their business operations.
 
+[![Website](https://img.shields.io/badge/website-000000?style=for-the-badge&logo=About&logoColor=white)](https://primetravel-162f2.web.app)
+
 ## **Features**
 
 - **Dashboard 📊:**
